@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/11/19 17:47:35 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/07 12:22:41 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,13 @@ class	vector
 		explicit	vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
 		_alloc(alloc), _data(0), _size(n), _capacity(n)
 		{	
+			std::cout << "ici" << std::endl;;
 			_data = _alloc.allocate(_size);
-			this->assign(n, val);
+			//this->assign(n, val);
+			for (int i = 0; i < n; i++)
+			{
+				_alloc.construct(_data + i, val);
+			}
 		}
 		
 		template <class InputIterator>
@@ -52,14 +57,14 @@ class	vector
 			_capacity = ft::distance(first, last);
 			_size = _capacity;
 			_data = _alloc.allocate(_size);
-			//this->assign(first, last);
+			this->assign(first, last);
 		}
 		
 		template <class InputIterator>
 		void	assign(InputIterator first, InputIterator last)
 		{
-			for (size_type i = 0; first != last; i++)
-				_alloc.construct(_data + i, *first);
+		//	for (size_type i = 0; first != last; i++)
+//				_alloc.construct(_data + i, *first);
 		}
 
 		void	assign(size_type n, const value_type& val)
