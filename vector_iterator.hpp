@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 10:00:41 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/13 13:54:50 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/16 12:59:55 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class	VecIterator
 	public:
 	
 	typedef typename std::random_access_iterator_tag		tag;
+	typedef typename ft::Iterator<tag, T>::reference	 	iterator_category;
 	typedef typename ft::Iterator<tag, T>::reference	 	reference;
 	typedef typename ft::Iterator<tag, T>::value_type 		value_type;
 	typedef typename ft::Iterator<tag, T>::pointer			pointer;
@@ -30,10 +31,25 @@ class	VecIterator
 
 	VecIterator() :	_p(0) {}; 
 	VecIterator(pointer addr) : _p(addr) {}; 
+	VecIterator(const VecIterator<T>& src) : _p(src._p) {};
 
 	reference	operator*() {return (*(this->_p));}
+
+	VecIterator	operator+(difference_type n)
+	{
+		VecIterator	tmp(*this);
+		for (difference_type i = 0; i < n; i++)
+			++tmp;
+		return (tmp);
+	}
+
+	VecIterator&	operator+=(difference_type n)
+	{
+		*this = *this + n;
+		return (*this);	
+	}
 	
-	VecIterator	operator++()
+	VecIterator&	operator++()
 	{
 		this->_p += 1;
 		return (*this);
@@ -44,7 +60,14 @@ class	VecIterator
 		++(*this);
 		return (tmp);
 	}
-	VecIterator	operator--()
+	VecIterator	operator-(difference_type n)
+	{
+		VecIterator	tmp(*this);
+		for (difference_type i = 0; i < n; i++)
+			--tmp;
+		return (tmp);
+	}
+	VecIterator&	operator--()
 	{
 		this->_p -= 1;
 		return (*this);
@@ -55,6 +78,12 @@ class	VecIterator
 		--(*this);
 		return (tmp);
 	}
+	VecIterator&	operator-=(difference_type n)
+	{
+		*this = *this - n;
+		return (*this);
+	}
+
 
 	bool operator!=(const VecIterator& rhs)
 	{
