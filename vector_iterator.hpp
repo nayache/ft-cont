@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 10:00:41 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/16 12:59:55 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/17 14:10:18 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,24 @@ class	VecIterator
 	}
 
 
-	bool operator!=(const VecIterator& rhs)
+	bool	operator!=(const VecIterator& rhs)
 	{
 		return (this->_p != rhs._p);
+	}
+	
+	bool	operator==(const VecIterator& rhs)
+	{
+		return (this->_p == rhs._p);
+	}
+	
+	bool	operator<(const VecIterator& rhs)
+	{
+		return (this->_p < rhs._p);
+	}
+
+	bool	operator>(const VecIterator& rhs)
+	{
+		return (this->_p > rhs._p);
 	}
 	
 	private:

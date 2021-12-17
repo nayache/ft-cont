@@ -6,21 +6,22 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/16 13:36:15 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/17 14:45:18 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-#include <memory>
-#include <iostream>
-#include <iterator>
-#include <stdexcept>
-#include "utils.hpp"
-#include "reverse_iterator.hpp"
-#include "vector_iterator.hpp"
-#include <stdio.h> // a supp
+# include <memory>
+# include <iostream>
+# include <iterator>
+# include <stdexcept>
+# include "utils.hpp"
+# include "reverse_iterator.hpp"
+# include "vector_iterator.hpp"
+# include <stdio.h> // a supp
+# include <limits>
 
 namespace ft {
 
@@ -57,8 +58,7 @@ class	vector
 		explicit	vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
 		_alloc(alloc), _size(n), _capacity(n)
 		{
-			//std::cout << "constructor size/val" << std::endl;
-			_data = _alloc.allocate(_size);
+			_data = _alloc.allocate(_capacity);
 			for (size_type i = 0; i < n; i++)
 				_alloc.construct(_data + i, val);
 		}
@@ -66,7 +66,6 @@ class	vector
 		template <class Iterator>	
 		vector(Iterator first, Iterator last, const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0)
 		{
-			//std::cout << "constructor iterators" << std::endl;
 			_capacity = ft::distance(first, last);
 			_size = _capacity;
 			_data = _alloc.allocate(_size);
@@ -107,7 +106,6 @@ class	vector
 		template <class Iterator>
 		void	assign(Iterator first, Iterator last)
 		{
-		//	std::cout << "ici assign(iterators)\n";
 			size_type n = ft::distance(first, last);
 			if (n > this->_capacity)
 			{
@@ -122,14 +120,26 @@ class	vector
 				first++;
 			}
 		}
-
-		void	print()
+		
+		void	push_back(const value_type& val)
 		{
-			unsigned long i = 0;
-			for (pointer tmp = _data; i < _size; i++)
-				std::cout << '[' << *(tmp + i) << ']';
-			_alloc.deallocate(_data, _capacity);
+			if (this->_size + 1 > this->_capacity)
+			{
+				this->_capacity *= 2;
+				pointer tmp = this->_data;
+				iterator it = this->begin();
+				iterator ite = this->end();
+				this->_data = _alloc.allocate(this->_capacity);
+				assign(it, ite);
+				delete tmp;
+			}
+			this->_alloc.construct(this->_data + this->_size, val);
+			this->_size++;
 		}
+		void	pop_back() { this->_size--; }
+	//	iterator	insert(iterator position, const value_type& val)
+	//	void	insert(iterator position, size_type n, const value_type& val)
+
 		//ELEMENT-ACCESS
 		
 		reference	operator[](size_type n) const { return (*(this->_data + n)); }
@@ -154,20 +164,8 @@ class	vector
 		const_iterator		cbegin() { return (const_iterator(this->_data)); }
 		reverse_iterator	rbegin() { return (reverse_iterator(this->end() - 1)); }
 		const_reverse_iterator	crbegin() { return (const_reverse_iterator(this->end() - 1)); }
-		iterator		end()
-		{
-			iterator it = this->begin();
-			for (size_type i = 0; i < _size; i++)
-				it++;
-			return (it);
-		}
-		const_iterator	cend()
-		{
-			const_iterator it = this->cbegin();
-			for (size_type i = 0; i < _size; i++)
-				it++;
-			return (it);
-		}
+		iterator		end() { return (this->begin() + this->_size); }
+		const_iterator	cend() { return (this->begin() + this->_size); }
 		reverse_iterator	rend() { return (reverse_iterator(this->begin() - 1)); }
 		const_reverse_iterator	crend() { return (const_reverse_iterator(this->begin() - 1)); }
 		
@@ -175,7 +173,9 @@ class	vector
 		
 		size_type	size() const { return (this->_size); }
 		size_type	capacity() const { return (this->_capacity); }
-	
+		size_type	max_size() const { return (this->_alloc.max_size()); }
+		bool		empty() const { return(this->_size == 0); }
+
 	private:
 
 		allocator_type	_alloc;
