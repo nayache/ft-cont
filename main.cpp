@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:50 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/17 14:34:59 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/20 12:45:25 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,40 @@
 #include <stdlib.h>
 int	main()
 {	
-	std::vector<std::string> arr3(10, "ahah");
+    ft::vector<std::string> foo(3, "slt");
+    ft::vector<std::string> bar(5, "holaa");
 
-	arr3.pop_back();
-	arr3.push_back(static_cast<std::string>("1st"));
-	
-	std::cout << "size " << arr3.size() << std::endl;
-	std::cout << "capacity " << arr3.capacity() << std::endl;
-	
-//	arr3.insert(arr3.begin(), "inserer");
-	
-	for (std::vector<std::string>::iterator it = arr3.begin(); it != arr3.end(); ++it)
+	foo.swap(bar);
+	std::cout << " foo size: " << foo.size() << " capacity: " << foo.capacity() << std::endl;
+    for (ft::vector<std::string>::iterator it = foo.begin(); it != foo.end(); it++)
+        std::cout << *it << " ";
+    std::cout << std::endl;
+	std::cout << "bar size: " << bar.size() << " capacity: " << bar.capacity() << std::endl;
+    for (ft::vector<std::string>::iterator it = bar.begin(); it != bar.end(); it++)
+        std::cout << *it << " ";
+    std::cout << std::endl;
+	bar.clear();
+	bar.push_back("1");
+	bar.push_back("2");
+	bar.push_back("3");
+	bar.push_back(";(");
+	bar.pop_back();
+	bar.insert(bar.end(), foo.begin(), foo.end());
+	bar.push_back("NN");
+	bar.push_back("%");
+	std::cout << "bar size: " << bar.size() << " capacity: " << bar.capacity() << std::endl;
+    for (ft::vector<std::string>::iterator it = bar.begin(); it != bar.end(); it++)
 	{
-		std::cout << "(" << *it << ")" << std::endl;
+        std::cout << *it << " ";
 	}
-	std::vector<std::string> arr90(1, "ahah");
-	std::cout << arr3.max_size() << std::endl;
-	std::cout << arr90.back() << std::endl;
-	std::cout << arr90.front() << std::endl;
+	std::cout << std::endl;	
+	ft::vector<std::string>::iterator test = bar.erase(bar.end() - 1);
+	std::cout << *test << std::endl;
+	std::cout << "bar size: " << bar.size() << " capacity: " << bar.capacity() << std::endl;
+    for (ft::vector<std::string>::iterator it = bar.begin(); it != bar.end(); it++)
+	{
+        std::cout << *it << " ";
+	}
+	std::cout << std::endl;	
 	return (0);
 }
