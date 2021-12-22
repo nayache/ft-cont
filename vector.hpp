@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/20 12:46:01 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/22 14:28:22 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@
 # include "utils.hpp"
 # include "reverse_iterator.hpp"
 # include "vector_iterator.hpp"
+# include "enable_if.hpp"
+# include "is_integral.hpp"
 # include <limits>
+# include <cstddef>
 
 namespace ft {
 
@@ -54,17 +57,18 @@ class	vector
 		
 		explicit	vector(const allocator_type& alloc = allocator_type()) : 
 		_alloc(alloc), _data(0), _size(0), _capacity(0) {}
-		
-		explicit	vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
-		_alloc(alloc), _size(n), _capacity(n)
+
+		explicit	vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+		: _alloc(alloc), _size(n), _capacity(n)
 		{
 			_data = _alloc.allocate(_capacity);
 			for (size_type i = 0; i < n; i++)
 				_alloc.construct(_data + i, val);
 		}
-	
-		template <class Iterator>	
-		vector(Iterator first, Iterator last, const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0)
+
+		template <class InputIterator>
+		vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last,
+		const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0)
 		{
 			_capacity = ft::distance(first, last);
 			_size = _capacity;
@@ -74,6 +78,13 @@ class	vector
 				_alloc.construct(_data + i, *first);
 				first++;
 			}
+		}
+		
+		vector(const vector& x) : _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
+		{
+			this->_data = this->_alloc.allocate(this->_capacity);
+			for (size_type i = 0; i < this->_size; i++)
+				this->_alloc.construct(_data + i, *(x._data + i));
 		}
 
 		vector& operator=(vector& src)
