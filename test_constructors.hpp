@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 18:13:12 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/28 18:17:00 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@
 # define vector ft::vector
 
 template <typename T>
-void	prfloatAttributes(vector<T> vec)
+void	printAttributes(vector<T> vec)
 {
 	std::cout << "size: " << vec.size() << " ";
 	std::cout << "capacity: " << vec.capacity() << std::endl;
 }
 
 template <typename T>
-void	prfloatVector(vector<T> vec)
+void	printVector(vector<T> vec)
 {
 	prfloatAttributes(vec);
 
