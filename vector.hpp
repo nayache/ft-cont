@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/22 14:28:22 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/28 16:12:23 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <cstddef>
 
 namespace ft {
-
 template <class T, class Allocator = std::allocator<T> >
 class	vector
 {
@@ -58,8 +57,8 @@ class	vector
 		explicit	vector(const allocator_type& alloc = allocator_type()) : 
 		_alloc(alloc), _data(0), _size(0), _capacity(0) {}
 
-		explicit	vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
-		: _alloc(alloc), _size(n), _capacity(n)
+		vector(size_type n, const value_type& val = value_type(),
+		const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(n), _capacity(n)
 		{
 			_data = _alloc.allocate(_capacity);
 			for (size_type i = 0; i < n; i++)
@@ -67,8 +66,8 @@ class	vector
 		}
 
 		template <class InputIterator>
-		vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last,
-		const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0)
+		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NullPtr) : _alloc(alloc), _size(0)
 		{
 			_capacity = ft::distance(first, last);
 			_size = _capacity;
@@ -243,7 +242,8 @@ class	vector
 
 		//ELEMENT-ACCESS
 		
-		reference	operator[](size_type n) const { return (*(this->_data + n)); }
+		reference		operator[](size_type n) { return (*(this->_data + n)); }
+		const_reference	operator[](size_type n) const { return (*(this->_data + n)); }
 		reference	at(size_type n) {
 			if (n >= this->_size)
 				throw std::out_of_range("check_acces_range: n index >= this->size() !");
@@ -255,7 +255,9 @@ class	vector
 			return (this->_data[n]);
 		}
 		reference			front() { return (_data[0]); }
+		const_reference		front() const { return (_data[0]); }
 		reference			back() { return (_data[_size - 1]); }
+		const_reference		back() const { return (_data[_size - 1]); }
 		value_type			*data() { return (this->_data); }
 		const value_type	*data() const { return (this->_data); }
 		
@@ -277,7 +279,7 @@ class	vector
 		size_type	max_size() const { return (this->_alloc.max_size()); }
 		bool		empty() const { return(this->_size == 0); }
 		
-		void		resize(size_type n, value_type val = value_type())
+		void	resize(size_type n, value_type val = value_type())
 		{
 			if (n == 0)
 				return;
@@ -298,7 +300,7 @@ class	vector
 			}
 		}
 
-		void		reserve(size_type n)
+		void	reserve(size_type n)
 		{
 			if (n <= this->_capacity)
 				return;
@@ -309,6 +311,18 @@ class	vector
 			this->_data = this->_alloc.allocate(this->_capacity);
 			assign(it, ite);
 			this->_alloc.deallocate(tmp, this->_capacity);
+		}
+
+		void	shrink_to_fit()
+		{
+			if (this->_size == this->_capacity)
+				return;
+			ft::vector<T> tmp(*this);
+			this->clear();
+			this->_alloc.deallocate(this->_data, this->_capacity);
+			this->_capacity = tmp.size();
+			this->_data = this->_alloc.allocate(this->_capacity);
+			this->assign(tmp.begin(), tmp.end());
 		}
 		
 		//ALLOCATOR

@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:50 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/22 14:28:16 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/28 14:08:36 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <cstddef>
 #include <typeinfo>
 #include <stdlib.h>
+
 int	main()
 {	
     ft::vector<int> foo(3, 4);
@@ -63,5 +64,14 @@ int	main()
         std::cout << *it << " ";
 	}
 	std::cout << std::endl;	
+	ft::vector<int> tst(10, 55);
+	tst.resize(10);
+	tst.shrink_to_fit();
+	std::cout << "tst size: " << tst.size() << " capacity: " << tst.capacity() << std::endl;
+    for (ft::vector<int>::iterator it = tst.begin(); it != tst.end(); it++)
+	{
+        std::cout << *it << " ";
+	}
+	std::cout << std::endl;
 	return (0);
 }

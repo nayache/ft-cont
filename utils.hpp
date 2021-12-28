@@ -6,11 +6,13 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/16 10:03:59 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/28 14:10:27 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "iterator_traits.hpp"
+#ifndef UTILS_HPP
+# define UTILS_HPP
+# include "iterator_traits.hpp"
 
 namespace ft {
 
@@ -27,3 +29,18 @@ int	distance(Iterator first, Iterator last)
 }
 
 }
+namespace ft {
+
+class NullPtr
+{
+	public:
+		template <class T>
+		operator T*() const { return (0); }
+		template <class C, class T>
+		operator T* C::*() const { return (0); }
+	private:
+		void operator&() const;
+} NullPtr = {};
+}
+
+#endif

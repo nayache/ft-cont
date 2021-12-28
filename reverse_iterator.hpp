@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 07:33:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/16 12:57:57 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/28 16:44:27 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class	ReverseIterator
 	ReverseIterator		operator++(int)
 	{
 		ReverseIterator	tmp(*this);
-		--(*this);
+		++(*this);
 		return (tmp);
 	}
 	ReverseIterator	operator-(difference_type n) const
@@ -80,7 +80,7 @@ class	ReverseIterator
 	ReverseIterator		operator--(int)
 	{
 		ReverseIterator	tmp(*this);
-		++(*this);
+		--(*this);
 		return (tmp);
 	}
 	ReverseIterator&	operator-=(difference_type n)
