@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 18:17:00 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/28 19:05:07 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	printAttributes(vector<T> vec)
 template <typename T>
 void	printVector(vector<T> vec)
 {
-	prfloatAttributes(vec);
+	printAttributes(vec);
 
 	for (typename vector<T>::size_type i = 0; i < vec.size(); i++)
 	{
@@ -47,7 +47,7 @@ void	test_constructors(void)
 		std::cout << RED << "error default constructor: size not equal at 0" << RESET << std::endl;
 	if (defaultVec.capacity() != 0)
 		std::cout << RED << "error default constructor: capacity not equal at 0" << RESET << std::endl;
-	prfloatVector(defaultVec);
+	printVector(defaultVec);
 	
 	std::cout << YELLOW << "vector(n) testing:" << RESET << std::endl;
 	vector<float> Vec(3);
@@ -55,7 +55,7 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(n): size not equal at 0" << RESET << std::endl;
 	if (Vec.capacity() != 3)
 		std::cout << RED << "error default constructor: capacity no at the right value" << RESET << std::endl;
-	prfloatVector(Vec);
+	printVector(Vec);
 	if (Vec[0] || Vec[1] || Vec[2])
 		std::cout << RED << "error default constructor: value not at 0" << RESET << std::endl;
 	
@@ -65,7 +65,7 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(n, v): size not at the right value" << RESET << std::endl;
 	if (fillVec.capacity() != 5)
 		std::cout << RED << "error constructor(n, v): capacity not at the right value" << RESET << std::endl;
-	prfloatVector(fillVec);
+	printVector(fillVec);
 	for (typename vector<float>::size_type i = 0; i < 5; i++)
 	{
 		std::cout << fillVec[i] << "\n";
@@ -79,7 +79,7 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(begin, end): size not at the right value" << RESET << std::endl;
 	if (rangeVec.capacity() != 5)
 		std::cout << RED << "error constructor(begin, end): capacity not at the right value" << RESET << std::endl;
-	prfloatVector(rangeVec);
+	printVector(rangeVec);
 	for (typename vector<float>::size_type i = 0; i < 5; i++)
 	{
 		if (rangeVec[i] != 50.5)
@@ -92,7 +92,7 @@ void	test_constructors(void)
 		std::cout << RED << "error copy constructor: size not at the right value" << RESET << std::endl;
 	if (copyVec.capacity() != 5)
 		std::cout << RED << "error copy constructor: capacity not at the right value" << RESET << std::endl;
-	prfloatVector(copyVec);
+	printVector(copyVec);
 	if (&(copyVec[0]) == &(rangeVec[0]))
 		std::cout << RED << "error copy constructor: Not a deep copy" << RESET << std::endl;
 	for (typename vector<float>::size_type i = 0; i < 5; i++)
@@ -107,7 +107,7 @@ void	test_constructors(void)
 		std::cout << RED << "error assign constructor: size not at the right value" << RESET << std::endl;
 	if (copyVec.capacity() != 5)
 		std::cout << RED << "error assign constructor: capacity not at the right value" << RESET << std::endl;
-	prfloatVector(copyOperatorVec);	
+	printVector(copyOperatorVec);	
 	if (&(copyOperatorVec[0]) == &(copyVec[0]))
 		std::cout << RED << "error assign copy constructor: Not a deep copy" << RESET << std::endl;
 	for (typename vector<float>::size_type i = 0; i < 5; i++)
@@ -124,7 +124,7 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(tab.begin, tab.end): size not at the right value" << RESET << std::endl;
 	if (tabVec.capacity() != 4)
 		std::cout << RED << "error constructor(tab.begin, tab.end): capacity not at the right value" << RESET << std::endl;
-	prfloatVector(tabVec);
+	printVector(tabVec);
 	typename vector<float>::value_type val = 3;
 	for (typename vector<float>::size_type i = 0; i < 4; i++)
 	{
