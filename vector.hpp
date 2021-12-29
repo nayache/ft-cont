@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 14:48:32 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 15:53:16 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,11 +257,20 @@ class	vector
 			return (this->begin() + dist);
 		}
 
+		iterator	erase(iterator first, iterator last)
+		{
+			difference_type n = ft::distance(first, last);
+			for (difference_type i = 0; i < n; i++)
+				first = erase(first);
+			return (first);
+		}
+
 		//ELEMENT-ACCESS
 		
 		reference		operator[](size_type n) { return (*(this->_data + n)); }
 		const_reference	operator[](size_type n) const { return (*(this->_data + n)); }
-		reference	at(size_type n) {
+		reference	at(size_type n)
+		{
 			if (n >= this->_size)
 			{
 				std::string msg("vector::_M_range_check: __n (which is ");
@@ -274,7 +283,8 @@ class	vector
 			else
 				return (this->_data[n]);
 		}
-		const_reference	at(size_type n) const {
+		const_reference	at(size_type n) const
+		{
 			if (n >= this->_size)
 			{
 				std::string msg("vector::_M_range_check: __n (which is ");

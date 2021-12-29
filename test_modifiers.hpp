@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:28:19 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 15:07:17 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 15:58:36 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,45 @@ void	test_modifiers(void)
 	//-----------ERASE()-------------
 	std::cout << YELLOW << ".erase() testing" << RESET << std::endl;
 
+	VECTOR<float> vecTest;
 
+	VECTOR<float>::value_type f = 10.10f;	
+	for (int i = 0; i < 10; i++)
+	{
+		vecTest.push_back(f);
+		std::cout << "(" << vecTest[i] << ")";
+		f += 10.10f;
+	}
+	std::cout << std::endl;
+	f = *(vecTest.begin() + 3);
+	vecTest.erase(vecTest.begin() + 3);
+	for (VECTOR<float>::size_type i = 0; i < vecTest.size(); i++)
+	{
+		std::cout << "(" << vecTest[i] << ")";
+		if (vecTest[i] == f)
+			std::cout << RED << "error erase(): value not removed!" << RESET << std::endl;
+	}
+	std::cout << std::endl;
+	if (vecTest.size() != 9)
+		std::cout << RED << "error erase(): size not updated after remove element!" << RESET << std::endl;
+	
+	VECTOR<float> saveValues(vecTest.begin(), vecTest.end() - 4);
+	vecTest.erase(vecTest.begin(), vecTest.end() - 4);
+	
+	for (VECTOR<float>::size_type i = 0; i < vecTest.size(); i++)
+	{
+		for (VECTOR<float>::size_type j = 0; j < saveValues.size(); j++)
+		{
+			if (vecTest[i] == saveValues[j])
+				std::cout << RED << "error erase(): value not removed!" << RESET << std::endl;
+		}
+		std::cout << "(" << vecTest[i] << ")";
+	}
+	std::cout << std::endl;
+	if (vecTest.size() != 4)
+		std::cout << RED << "error erase(): size not updated after remove element!" << RESET << std::endl;
+	
+	std::cout << GREEN << ".erase() ok" << RESET << std::endl;
 }
 
 #endif
