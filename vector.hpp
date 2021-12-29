@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 10:45:07 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 14:48:32 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class	vector
 		{
 			this->clear();
 			this->_alloc.deallocate(this->_data, this->_capacity);
+			this->_capacity = 0;
 		}
 		
 		//CONSTRUCTORS
@@ -103,40 +104,51 @@ class	vector
 		
 		void	assign(size_type n, const value_type& val)
 		{
-			if (n > this->_capacity)
+			this->clear();
+			if (n == 0)
+				return;
+			if (this->_capacity < n)
 			{
-				delete this->_data;
+				this->_alloc.deallocate(this->_data, this->_capacity);
 				this->_data = this->_alloc.allocate(n);
 				this->_capacity = n;
 			}
-			this->_size = n;
+			this->_size = 0;
 			for (size_type i = 0; i < n; i++)
+			{
 				_alloc.construct(this->_data + i, val);
+				this->_size++;
+			}
 		}
 
 		template <class Iterator>
-		void	assign(Iterator first, Iterator last)
+		void	assign(Iterator first, Iterator last, typename ft::enable_if<!ft::is_integral<Iterator>::value, Iterator>::type* = NullPtr)
 		{
 			size_type n = ft::distance(first, last);
-			if (n > this->_capacity)
+			this->clear();
+			if (this->_capacity < n)
 			{
 				delete this->_data;
 				this->_data = this->_alloc.allocate(n);
 				this->_capacity = n;
 			}
-			this->_size = n;
+			this->_size = 0;
 			for (size_type i = 0; first != last; i++)
 			{
 				_alloc.construct(this->_data + i, *first);
 				first++;
+				this->_size++;
 			}
 		}		
 		void	push_back(const value_type& val)
 		{
-			if (this->_size >= this->_capacity)
+			if (this->_size == this->_capacity)
 			{
 				if (this->_capacity == 0)
-					this->reserve(1);
+				{
+					this->_data = this->_alloc.allocate(1);
+					this->_capacity = 1;
+				}
 				else
 					this->reserve(this->_capacity * 2);
 			}
@@ -259,12 +271,21 @@ class	vector
 				msg.insert(msg.size(), ")");
 				throw std::out_of_range(msg);
 			}
-			return (this->_data[n]);
+			else
+				return (this->_data[n]);
 		}
 		const_reference	at(size_type n) const {
 			if (n >= this->_size)
-				throw std::out_of_range("n index >= this->size() !\n");
-			return (this->_data[n]);
+			{
+				std::string msg("vector::_M_range_check: __n (which is ");
+				msg.insert(msg.size(), ft::itoa(n));
+				msg.insert(msg.size(), ") >= this->size() (which is ");
+				msg.insert(msg.size(), ft::itoa(static_cast<long long int>(this->size())));
+				msg.insert(msg.size(), ")");
+				throw std::out_of_range(msg);
+			}
+			else
+				return (this->_data[n]);
 		}
 		reference			front() { return (_data[0]); }
 		const_reference		front() const { return (_data[0]); }
@@ -319,10 +340,11 @@ class	vector
 			pointer tmp = this->_data;
 			iterator it = this->begin();
 			iterator ite = this->end();
+			size_type oldCapacity = this->_capacity;
 			this->_capacity = n;
 			this->_data = this->_alloc.allocate(this->_capacity);
 			assign(it, ite);
-			this->_alloc.deallocate(tmp, this->_capacity);
+			this->_alloc.deallocate(tmp, oldCapacity);
 		}
 
 		void	shrink_to_fit()

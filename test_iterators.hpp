@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 10:38:16 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 12:25:33 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	test_iterators(void)
 		std::cout << RED << "error: begin iterator don't point to the last element + 1" << RESET << std::endl;
 
 	VECTOR<int>::value_type v = 2;
-	for (typename VECTOR<int>::size_type i = 0; i < vec.size(); i++)
+	for (VECTOR<int>::size_type i = 0; i < vec.size(); i++)
 	{
 		std::cout << *it << " " << std::endl;
 		if (*it != v)

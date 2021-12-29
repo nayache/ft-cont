@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 17:10:35 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 11:18:29 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 14:51:55 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	test_access(void)
 	test[3] = 44.11;
 	test[4] = 55.11;
 	test[5] = 66.11;
-	typename VECTOR<double>::value_type val = 11.11;
-	for (typename VECTOR<double>::size_type i = 0; i < test.size(); i++)
+	VECTOR<double>::value_type val = 11.11;
+	for (VECTOR<double>::size_type i = 0; i < test.size(); i++)
 	{
 		if (test[i] != (11.11 + (i * 11)))
 			std::cout << RED << "error operator[]: not good value" << RESET << std::endl;
@@ -37,7 +37,7 @@ void	test_access(void)
 		val += 11;
 	}
 
-	typename VECTOR<double>::size_type i = 0;
+	VECTOR<double>::size_type i = 0;
 	if (test[i + 4] != 55.11)
 		std::cout << RED << "error operator[]: not good value" << RESET << std::endl;
 	
@@ -52,7 +52,7 @@ void	test_access(void)
 	std::cout << YELLOW << ".at() testing" << RESET << std::endl;
 
 	VECTOR<std::string> testAt(5);
-	for (typename VECTOR<std::string>::size_type i = 0; i < 5; i++)
+	for (VECTOR<std::string>::size_type i = 0; i < 5; i++)
 	{
 		switch (i)
 		{
@@ -74,7 +74,7 @@ void	test_access(void)
 		}
 	}
 	std::string strs[5] = {"one", "two", "three", "four", "five"};
-	for (typename VECTOR<std::string>::size_type i = 0; i < 5; i++)
+	for (VECTOR<std::string>::size_type i = 0; i < 5; i++)
 	{
 		std::cout << "(" << testAt.at(i) << ")";
 		if (strs[i].compare(testAt.at(i)) != 0)
@@ -84,7 +84,7 @@ void	test_access(void)
 	}
 	std::cout << std::endl;
 	
-	typename VECTOR<std::string>::size_type j = 0;
+	VECTOR<std::string>::size_type j = 0;
 	testAt.at(j + 2) = "modify";
 	std::string testStr = testAt.at(2);
 	std::cout << testAt.at(2) << std::endl;
@@ -122,7 +122,7 @@ void	test_access(void)
 	std::cout << "-> " << vect.front() << std::endl;
 	if (vect.front() != 'h')
 		std::cout << RED << "error front(): front returns(reference) is a bad value" << RESET << std::endl;
-	for (typename VECTOR<char>::size_type i = 0; i < 6; i++)
+	for (VECTOR<char>::size_type i = 0; i < 6; i++)
 	{
 		std::cout << vect.front();
 		vect.erase(vect.begin());
@@ -151,20 +151,20 @@ void	test_access(void)
 	if (tab.back() != "only one element is modified")
 		std::cout << RED << "error back(): back returns(reference) is a bad value" << RESET << std::endl;
 	
-	VECTOR<std::string> tab2;
-	tab2.push_back("UN");
-	tab2.push_back("DEUX");
-	tab2.push_back("TROIS");
-	tab2.push_back("QUATRE");
-	std::string str[4] = {"QUATRE", "TROIS", "DEUX", "UN"};
-	for (typename VECTOR<char>::size_type i = 0; i < 4; i++)
+	VECTOR<char> tab2;
+	tab2.push_back('A');
+	tab2.push_back('B');
+	tab2.push_back('C');
+	tab2.push_back('D');
+	printVector(tab2);
+	char c = 'D';
+	for (VECTOR<char>::size_type i = 0; i < 1; i++)
 	{
 		std::cout << tab2.back();
-		if (str[i].compare(tab2.back()) != 0)
+		if (tab2.back() != c)
 			std::cout << RED << "error back(): back returns(reference) is a bad value" << RESET << std::endl;
-		if (i + 1 < 4)
-			std::cout << " ";
 		tab2.pop_back();
+		c--;
 	}
 	std::cout << std::endl;
 

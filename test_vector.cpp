@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 13:54:08 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 10:33:18 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 14:52:19 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 int	main()
 {
-	std::cout << "\e[1;44mCONSTRUCTORS testing:" << RESET << std::endl;
+	std::cout << "\e[1;45m----------CONSTRUCTORS-TEST------:" << RESET << std::endl;
 	test_constructors();
-	std::cout << "\e[1;44mITERATORS testing:" << RESET << std::endl;
+	std::cout << "\e[1;45m----------ITERATORS----TEST------:" << RESET << std::endl;
 	test_iterators();
-	std::cout << "\e[1;44mCAPACITY testing:" << RESET << std::endl;
+	std::cout << "\e[1;45m----------CAPACITY-----TEST------:" << RESET << std::endl;
 	test_capacity();
-	std::cout << "\e[1;44mELEMENTS_ACCESS testing:" << RESET << std::endl;
+	std::cout << "\e[1;45m-------ELEMENTS_ACCESS-TEST------:" << RESET << std::endl;
 	test_access();
+	std::cout << "\e[1;45m----------MODIFIERS----TEST------:" << RESET << std::endl;
+	test_modifiers();
 	return (0);	
 }

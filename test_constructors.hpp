@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 10:37:57 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 12:25:19 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	test_constructors(void)
 	if (fillVec.capacity() != 5)
 		std::cout << RED << "error constructor(n, v): capacity not at the right value" << RESET << std::endl;
 	printVector(fillVec);
-	for (typename VECTOR<float>::size_type i = 0; i < 5; i++)
+	for (VECTOR<float>::size_type i = 0; i < 5; i++)
 	{
 		std::cout << fillVec[i] << "\n";
 		if (fillVec[i] != 50.5)
@@ -77,7 +77,7 @@ void	test_constructors(void)
 	if (rangeVec.capacity() != 5)
 		std::cout << RED << "error constructor(begin, end): capacity not at the right value" << RESET << std::endl;
 	printVector(rangeVec);
-	for (typename VECTOR<float>::size_type i = 0; i < 5; i++)
+	for (VECTOR<float>::size_type i = 0; i < 5; i++)
 	{
 		if (rangeVec[i] != 50.5)
 			std::cout << RED << "error constructor(begin, end): elements not at the right value" << RESET << std::endl;
@@ -92,7 +92,7 @@ void	test_constructors(void)
 	printVector(copyVec);
 	if (&(copyVec[0]) == &(rangeVec[0]))
 		std::cout << RED << "error copy constructor: Not a deep copy" << RESET << std::endl;
-	for (typename VECTOR<float>::size_type i = 0; i < 5; i++)
+	for (VECTOR<float>::size_type i = 0; i < 5; i++)
 	{
 		if (copyVec[i] != 50.5)
 			std::cout << RED << "error copy constructor: elements not at the right value" << RESET << std::endl;
@@ -107,7 +107,7 @@ void	test_constructors(void)
 	printVector(copyOperatorVec);	
 	if (&(copyOperatorVec[0]) == &(copyVec[0]))
 		std::cout << RED << "error assign copy constructor: Not a deep copy" << RESET << std::endl;
-	for (typename VECTOR<float>::size_type i = 0; i < 5; i++)
+	for (VECTOR<float>::size_type i = 0; i < 5; i++)
 	{
 		if (copyOperatorVec[i] != 50.5)
 			std::cout << RED << "error assign copy constructor: elements not at the right value" << RESET << std::endl;
@@ -122,8 +122,8 @@ void	test_constructors(void)
 	if (tabVec.capacity() != 4)
 		std::cout << RED << "error constructor(tab.begin, tab.end): capacity not at the right value" << RESET << std::endl;
 	printVector(tabVec);
-	typename VECTOR<float>::value_type val = 3;
-	for (typename VECTOR<float>::size_type i = 0; i < 4; i++)
+	VECTOR<float>::value_type val = 3;
+	for (VECTOR<float>::size_type i = 0; i < 4; i++)
 	{
 		std::cout << val << std::endl;
 		if (tabVec[i] != val)
