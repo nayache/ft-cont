@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 14:10:27 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 09:07:44 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,6 @@ int	distance(Iterator first, Iterator last)
 	return (count);
 }
 
-}
-namespace ft {
-
 class NullPtr
 {
 	public:
@@ -41,6 +38,29 @@ class NullPtr
 	private:
 		void operator&() const;
 } NullPtr = {};
+
+std::string	itoa(long long int number)
+{
+	std::string dest;
+	bool	negative = false;
+
+	if (number < 0)
+	{
+		negative = true;
+		number *= -1;
+	}
+	while (number > 9)
+	{
+		dest.insert(dest.begin(), (number % 10) + 48);
+		number = number / 10;
+	}
+	dest.insert(dest.begin(), (number % 10) + 48);
+	if (negative == true)
+		dest.insert(dest.begin(), '-');
+	
+	return (dest);
+}
+
 }
 
 #endif

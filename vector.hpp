@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 16:12:23 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 10:45:07 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,12 @@ class	vector
 		void	push_back(const value_type& val)
 		{
 			if (this->_size >= this->_capacity)
-				this->reserve(this->_capacity * 2);
+			{
+				if (this->_capacity == 0)
+					this->reserve(1);
+				else
+					this->reserve(this->_capacity * 2);
+			}
 			this->_alloc.construct(this->_data + this->_size, val);
 			this->_size++;
 		}
@@ -246,7 +251,14 @@ class	vector
 		const_reference	operator[](size_type n) const { return (*(this->_data + n)); }
 		reference	at(size_type n) {
 			if (n >= this->_size)
-				throw std::out_of_range("check_acces_range: n index >= this->size() !");
+			{
+				std::string msg("vector::_M_range_check: __n (which is ");
+				msg.insert(msg.size(), ft::itoa(n));
+				msg.insert(msg.size(), ") >= this->size() (which is ");
+				msg.insert(msg.size(), ft::itoa(static_cast<long long int>(this->size())));
+				msg.insert(msg.size(), ")");
+				throw std::out_of_range(msg);
+			}
 			return (this->_data[n]);
 		}
 		const_reference	at(size_type n) const {

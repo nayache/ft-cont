@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:50 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 14:08:36 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 09:05:48 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,7 @@ int	main()
         std::cout << *it << " ";
 	}
 	std::cout << std::endl;
+	std::string testt = ft::itoa(-145005);
+	std::cout << testt << std::endl;
 	return (0);
 }

@@ -6,35 +6,32 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 16:20:25 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 10:37:48 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TEST_CAPACITY_HPP
 # define TEST_CAPACITY_HPP
-# include "colors.hpp"
-# include <vector>
-# include <iostream>
-# include "vector.hpp"
+# include "test.hpp"
 
 void	test_capacity(void)
 {
 	//--------SIZE()----------------
 	std::cout << YELLOW << ".size() testing" << RESET << std::endl;
 	
-	vector<int> vec;
+	VECTOR<int> vec;
 	if (vec.size() != 0)
 		std::cout << RED << "error: size invalid" << RESET << std::endl;
 	
-	vector<int> vec1(10);
+	VECTOR<int> vec1(10);
 	if (vec1.size() != 10)
 		std::cout << RED << "error: size invalid" << RESET << std::endl;
 	
-	vector<int> vec2(4, 42);
+	VECTOR<int> vec2(4, 42);
 	if (vec2.size() != 4)
 		std::cout << RED << "error: size invalid" << RESET << std::endl;
 	
-	vector<int> vec3(vec2.begin(), vec2.end());
+	VECTOR<int> vec3(vec2.begin(), vec2.end());
 	// modify size with push_back()/pop_back()
 	vec3.push_back(1);
 	vec3.push_back(1);
@@ -48,15 +45,15 @@ void	test_capacity(void)
 	
 	//-------------CAPACITY()-------------
 	std::cout << YELLOW << ".capacity() testing" << RESET << std::endl;
-	vector<int> test;
+	VECTOR<int> test;
 	if (test.capacity() != 0)
 		std::cout << RED << "error: capacity invalid" << RESET << std::endl;
 	
-	vector<int> test2(10);
+	VECTOR<int> test2(10);
 	if (test2.capacity() != 10)
 		std::cout << RED << "error: capacity invalid" << RESET << std::endl;
 	
-	vector<int> test3(4, 42);
+	VECTOR<int> test3(4, 42);
 	if (test3.capacity() != 4)
 		std::cout << RED << "error: capacity invalid" << RESET << std::endl;
 	// modify capacity with push_back()
@@ -82,11 +79,11 @@ void	test_capacity(void)
 
 	std::cout << YELLOW << ".empty() testing" << RESET << std::endl;
 
-	vector<int> e;
+	VECTOR<int> e;
 	if (e.empty() == false)
 		std::cout << RED << "error empty: invalid value" << RESET << std::endl;
 	
-	vector<int> e1(5, 30);
+	VECTOR<int> e1(5, 30);
 	if (e1.empty() == true)
 		std::cout << RED << "error empty: invalid value" << RESET << std::endl;
 	e1.pop_back();
@@ -103,8 +100,8 @@ void	test_capacity(void)
 
 	std::cout << YELLOW << ".reserve() testing" << RESET << std::endl;
 
-	vector<int> res(4, 2);
-	vector<int>::size_type start_size = res.size();
+	VECTOR<int> res(4, 2);
+	VECTOR<int>::size_type start_size = res.size();
 	
 	res.reserve(4);
 	res.reserve(3);
@@ -132,7 +129,7 @@ void	test_capacity(void)
 	//---------RESIZE()-----------
 
 	std::cout << YELLOW << ".resize() testing" << RESET << std::endl;
-	vector<int> tst(10, 9);
+	VECTOR<int> tst(10, 9);
 
 	tst.resize(2);
 	if (tst.size() != 2)

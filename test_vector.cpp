@@ -6,16 +6,11 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 13:54:08 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 17:14:02 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/29 10:33:18 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "colors.hpp"
-# include "test_constructors.hpp"
-# include "test_iterators.hpp"
-# include "test_capacity.hpp"
-# include "test_element_access.hpp"
-# include <iostream>
+#include "test.hpp"
 
 int	main()
 {
