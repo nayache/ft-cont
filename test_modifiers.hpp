@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:28:19 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 15:58:36 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/30 10:02:47 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ void	test_modifiers(void)
 	if (vect.size() != 1)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
 	std::cout << std::endl;
+	printAttributes(vect);
 
 	VECTOR<int> vect2(10);
 
@@ -209,6 +210,113 @@ void	test_modifiers(void)
 		std::cout << RED << "error erase(): size not updated after remove element!" << RESET << std::endl;
 	
 	std::cout << GREEN << ".erase() ok" << RESET << std::endl;
+
+	//---------CLEAR()-------------
+	std::cout << YELLOW << ".clear() testing" << RESET << std::endl;
+	
+	VECTOR<char> vecl;
+
+	vecl.push_back('x');
+	vecl.push_back('y');
+	vecl.push_back('z');
+
+	vecl.clear();
+	for (VECTOR<char>::size_type i = 0; i < vecl.size(); i++)
+	{
+		std::cout << RED << "error clear(): size not updated at zero" << RESET << std::endl;
+		break;
+	}
+	printVector(vecl);
+
+	VECTOR<char> vecl2(10, 'x');
+
+	vecl2.clear();
+	vecl2.clear();
+	vecl2.clear();
+	vecl2.clear();
+	for (VECTOR<char>::size_type i = 0; i < vecl2.size(); i++)
+	{
+		std::cout << RED << "error clear(): size not updated at zero" << RESET << std::endl;
+		break;
+	}
+	printVector(vecl2);
+	std::cout << GREEN << ".clear() ok" << RESET << std::endl;
+	
+	//-------------SWAP()----------------
+	std::cout << YELLOW << ".swap() testing" << RESET << std::endl;
+
+	VECTOR<std::string>	vecStr(4, "hola");
+	VECTOR<std::string>	vecStr2(7, "hi");
+
+	std::cout << "vecStr: ";
+	printVector(vecStr);
+	std::cout << "vecStr2: ";
+	printVector(vecStr2);
+	
+	vecStr.swap(vecStr2);
+	
+	std::cout << "after swap: " << std::endl;
+	
+	std::cout << "vecStr: ";
+	printVector(vecStr);
+	std::cout << "vecStr2: ";
+	printVector(vecStr2);
+	if ((vecStr.size() != 7 || vecStr.capacity() != 7) || (vecStr2.size() != 4 || vecStr2.capacity() != 4))
+		std::cout << RED << "error swap(): invalid attributes" << RESET << std::endl;
+
+	for (VECTOR<std::string>::size_type i = 0; i < vecStr.size(); i++)
+	{
+		if (vecStr[i].compare("hi") != 0)
+			std::cout << RED << "error swap(): values are the same as before" << RESET << std::endl;
+	}
+	for (VECTOR<std::string>::size_type i = 0; i < vecStr2.size(); i++)
+	{
+		if (vecStr2[i].compare("hola") != 0)
+			std::cout << RED << "error swap(): values are the same as before" << RESET << std::endl;
+	}
+
+	std::cout << GREEN << ".swap() ok" << RESET << std::endl;
+
+	//--------------INSERT()---------------
+	std::cout << YELLOW << ".insert() testing" << RESET << std::endl;
+	
+	//insert(pos, value)
+	VECTOR<int> vecTst(3, 100);
+	VECTOR<int>::iterator it = vecTst.begin();
+
+	it = vecTst.insert(it, 200);
+	printVector(vecTst);
+	if (it != vecTst.begin() || *it != 200)
+		std::cout << RED << "error insert(): function do not return the correct iterator position" << RESET << std::endl;
+	if (!(vecTst[0] == 200 && vecTst[1] == 100 && vecTst[2] == 100 && vecTst[3]))
+		std::cout << RED << "error insert(): invalid values in container" << RESET << std::endl;
+	if (vecTst.size() != 4)
+	std::cout << RED << "error insert(): invalid size after call function" << RESET << std::endl;
+
+	//insert(pos, n, value)
+
+	VECTOR<double> vecc(4, 24.58);
+
+	vecc.insert(vecc.end(), 2, 1999.99);
+	printVector(vecc);
+	if (!(vecc[0] == 24.58 && vecc[1] == 24.58 && vecc[2] == 24.58 && vecc[3] == 24.58 && vecc[4] == 1999.99 && vecc[5] == 1999.99))
+		std::cout << RED << "error insert(): invalid values in container" << RESET << std::endl;
+	if (vecc.size() != 6)
+		std::cout << RED << "error insert(): invalid size after call function" << RESET << std::endl;
+
+	//insert(pos, first, end)
+	VECTOR<int> vecTst2(2, -42);
+	VECTOR<int> vecTst3(6, 33);
+
+	vecTst2.insert(vecTst2.begin() + 1, vecTst3.begin(), vecTst3.end());
+	printVector(vecTst2);
+	if (!(vecTst2[0] == -42 && vecTst2[1] == 33 && vecTst2[2] == 33 && vecTst2[3] == 33 && vecTst2[4] == 33 &&
+		vecTst2[5] == 33 && vecTst2[6] == 33 && vecTst2[7] == -42))
+		std::cout << RED << "error insert(): invalid values in container" << RESET << std::endl;
+	if (vecTst2.size() != 8)
+	std::cout << RED << "error insert(): invalid size after call function" << RESET << std::endl;
+
+	std::cout << GREEN << ".insert() ok" << RESET << std::endl;
 }
 
 #endif

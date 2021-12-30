@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 15:30:20 by nayache          ###   ########.fr       */
+/*   Updated: 2021/12/30 09:15:42 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 # include "test.hpp"
 
 template <typename T>
-void	printAttributes(VECTOR<T> vec)
+void	printAttributes(VECTOR<T>& vec)
 {
 	std::cout << "size: " << vec.size() << " ";
 	std::cout << "capacity: " << vec.capacity() << std::endl;
 }
 
 template <typename T>
-void	printVector(VECTOR<T> vec)
+void	printVector(VECTOR<T>& vec)
 {
 	printAttributes(vec);
 
