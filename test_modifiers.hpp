@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:28:19 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/30 10:02:47 by nayache          ###   ########.fr       */
+/*   Updated: 2022/01/06 17:57:26 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "test.hpp"
 
-void	test_modifiers(void)
+void	test_modifiers(std::ofstream& ofs)
 {
 	//----------PUSH_BACK()-----------
 	std::cout << YELLOW << ".push_back() testing" << RESET << std::endl;
@@ -33,7 +33,7 @@ void	test_modifiers(void)
 	val = 0;
 	for (VECTOR<double>::size_type i = 0; i < 20; i++)
 	{
-		std::cout << "[" << vec[i] << "]";
+		ofs << "[" << vec[i] << "]";
 		if (vec[i] != val)
 			std::cout << RED << "error push_back(): values pushed are not identical to those expected" << RESET << std::endl;
 		val += 0.51;
@@ -61,11 +61,11 @@ void	test_modifiers(void)
 	test.pop_back();
 	for (VECTOR<int>::size_type i = 0; i < 10; i++)
 	{
-		std::cout << "[" << test[i] << "]";
+		ofs << "[" << test[i] << "]";
 		if (i > 6 && test[i] != static_cast<int>(i))
 			std::cout << RED << "error pop_back(): element < size && < capacity set at zero after called by this one" << RESET << std::endl;
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	if (test.size() != 7)
 		std::cout << RED << "error pop_back(): size is not updated correctly" << RESET << std::endl;
 	
@@ -82,10 +82,10 @@ void	test_modifiers(void)
 	{
 		if (*it != 100)
 			std::cout << RED << "error assign(): wrong value" << RESET << std::endl;
-		std::cout << "[" << *it << "]";
+		ofs << "[" << *it << "]";
 	}
-	std::cout << std::endl;
-	printAttributes(vect);
+	ofs << std::endl;
+	printAttributes(vect, ofs);
 	if (vect.size() != 4)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
 	
@@ -95,12 +95,12 @@ void	test_modifiers(void)
 	{
 		if (*it != -4)
 			std::cout << RED << "error assign(): wrong value" << RESET << std::endl;
-		std::cout << "[" << *it << "]";
+		ofs << "[" << *it << "]";
 	}
 	if (vect.size() != 1)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
-	std::cout << std::endl;
-	printAttributes(vect);
+	ofs << std::endl;
+	printAttributes(vect, ofs);
 
 	VECTOR<int> vect2(10);
 
@@ -114,7 +114,7 @@ void	test_modifiers(void)
 	// assign with iterators(first, end)
 	VECTOR<int> vect3;
 	vect3.assign(vect2.begin(), vect2.end());
-	printVector(vect3);
+	printVector(vect3, ofs);
 	v = 0;
 	for (VECTOR<int>::iterator it = vect3.begin(); it != vect3.end(); it++)
 	{
@@ -129,12 +129,12 @@ void	test_modifiers(void)
 	v = 1;
 	for (VECTOR<int>::iterator it = vect3.begin(); it != vect3.end(); it++)
 	{
-		std::cout << "[" << *it << "]";
+		ofs << "[" << *it << "]";
 		if (*it != v * 10)
 			std::cout << RED << "error assign(): wrong value" << RESET << std::endl;
 		v++;
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	if (vect3.size() != 8)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
 
@@ -142,12 +142,12 @@ void	test_modifiers(void)
 	v = 1;
 	for (VECTOR<int>::iterator it = vect3.begin(); it != vect3.end(); it++)
 	{
-		std::cout << "[" << *it << "]";
+		ofs << "[" << *it << "]";
 		if (*it != v * 10)
 			std::cout << RED << "error assign(): wrong value" << RESET << std::endl;
 		v++;
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	if (vect3.size() != 5)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
 
@@ -157,12 +157,12 @@ void	test_modifiers(void)
 	v = 33;
 	for (VECTOR<int>::iterator it = vect3.begin(); it != vect3.end(); it++)
 	{
-		std::cout << "[" << *it << "]";
+		ofs << "[" << *it << "]";
 		if (*it != v)
 			std::cout << RED << "error assign(): wrong value" << RESET << std::endl;
 		v += 33;
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	if (vect3.size() != 6)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
 
@@ -177,19 +177,19 @@ void	test_modifiers(void)
 	for (int i = 0; i < 10; i++)
 	{
 		vecTest.push_back(f);
-		std::cout << "(" << vecTest[i] << ")";
+		ofs << "(" << vecTest[i] << ")";
 		f += 10.10f;
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	f = *(vecTest.begin() + 3);
 	vecTest.erase(vecTest.begin() + 3);
 	for (VECTOR<float>::size_type i = 0; i < vecTest.size(); i++)
 	{
-		std::cout << "(" << vecTest[i] << ")";
+		ofs << "(" << vecTest[i] << ")";
 		if (vecTest[i] == f)
 			std::cout << RED << "error erase(): value not removed!" << RESET << std::endl;
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	if (vecTest.size() != 9)
 		std::cout << RED << "error erase(): size not updated after remove element!" << RESET << std::endl;
 	
@@ -203,9 +203,9 @@ void	test_modifiers(void)
 			if (vecTest[i] == saveValues[j])
 				std::cout << RED << "error erase(): value not removed!" << RESET << std::endl;
 		}
-		std::cout << "(" << vecTest[i] << ")";
+		ofs << "(" << vecTest[i] << ")";
 	}
-	std::cout << std::endl;
+	ofs << std::endl;
 	if (vecTest.size() != 4)
 		std::cout << RED << "error erase(): size not updated after remove element!" << RESET << std::endl;
 	
@@ -226,7 +226,7 @@ void	test_modifiers(void)
 		std::cout << RED << "error clear(): size not updated at zero" << RESET << std::endl;
 		break;
 	}
-	printVector(vecl);
+	printVector(vecl, ofs);
 
 	VECTOR<char> vecl2(10, 'x');
 
@@ -239,7 +239,7 @@ void	test_modifiers(void)
 		std::cout << RED << "error clear(): size not updated at zero" << RESET << std::endl;
 		break;
 	}
-	printVector(vecl2);
+	printVector(vecl2, ofs);
 	std::cout << GREEN << ".clear() ok" << RESET << std::endl;
 	
 	//-------------SWAP()----------------
@@ -248,19 +248,19 @@ void	test_modifiers(void)
 	VECTOR<std::string>	vecStr(4, "hola");
 	VECTOR<std::string>	vecStr2(7, "hi");
 
-	std::cout << "vecStr: ";
-	printVector(vecStr);
-	std::cout << "vecStr2: ";
-	printVector(vecStr2);
+	ofs << "vecStr: ";
+	printVector(vecStr, ofs);
+	ofs << "vecStr2: ";
+	printVector(vecStr2, ofs);
 	
 	vecStr.swap(vecStr2);
 	
-	std::cout << "after swap: " << std::endl;
+	ofs << "after swap: " << std::endl;
 	
-	std::cout << "vecStr: ";
-	printVector(vecStr);
-	std::cout << "vecStr2: ";
-	printVector(vecStr2);
+	ofs << "vecStr: ";
+	printVector(vecStr, ofs);
+	ofs << "vecStr2: ";
+	printVector(vecStr2, ofs);
 	if ((vecStr.size() != 7 || vecStr.capacity() != 7) || (vecStr2.size() != 4 || vecStr2.capacity() != 4))
 		std::cout << RED << "error swap(): invalid attributes" << RESET << std::endl;
 
@@ -285,7 +285,7 @@ void	test_modifiers(void)
 	VECTOR<int>::iterator it = vecTst.begin();
 
 	it = vecTst.insert(it, 200);
-	printVector(vecTst);
+	printVector(vecTst, ofs);
 	if (it != vecTst.begin() || *it != 200)
 		std::cout << RED << "error insert(): function do not return the correct iterator position" << RESET << std::endl;
 	if (!(vecTst[0] == 200 && vecTst[1] == 100 && vecTst[2] == 100 && vecTst[3]))
@@ -298,7 +298,7 @@ void	test_modifiers(void)
 	VECTOR<double> vecc(4, 24.58);
 
 	vecc.insert(vecc.end(), 2, 1999.99);
-	printVector(vecc);
+	printVector(vecc, ofs);
 	if (!(vecc[0] == 24.58 && vecc[1] == 24.58 && vecc[2] == 24.58 && vecc[3] == 24.58 && vecc[4] == 1999.99 && vecc[5] == 1999.99))
 		std::cout << RED << "error insert(): invalid values in container" << RESET << std::endl;
 	if (vecc.size() != 6)
@@ -309,7 +309,7 @@ void	test_modifiers(void)
 	VECTOR<int> vecTst3(6, 33);
 
 	vecTst2.insert(vecTst2.begin() + 1, vecTst3.begin(), vecTst3.end());
-	printVector(vecTst2);
+	printVector(vecTst2, ofs);
 	if (!(vecTst2[0] == -42 && vecTst2[1] == 33 && vecTst2[2] == 33 && vecTst2[3] == 33 && vecTst2[4] == 33 &&
 		vecTst2[5] == 33 && vecTst2[6] == 33 && vecTst2[7] == -42))
 		std::cout << RED << "error insert(): invalid values in container" << RESET << std::endl;

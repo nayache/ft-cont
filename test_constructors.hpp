@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 12:22:26 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/30 09:15:42 by nayache          ###   ########.fr       */
+/*   Updated: 2022/01/06 18:10:37 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,23 @@
 # include "test.hpp"
 
 template <typename T>
-void	printAttributes(VECTOR<T>& vec)
+void	printAttributes(VECTOR<T>& vec, std::ofstream& ofs)
 {
-	std::cout << "size: " << vec.size() << " ";
-	std::cout << "capacity: " << vec.capacity() << std::endl;
+	ofs << "size: " << vec.size() << " ";
+	ofs << "capacity: " << vec.capacity() << std::endl;
 }
 
 template <typename T>
-void	printVector(VECTOR<T>& vec)
+void	printVector(VECTOR<T>& vec, std::ofstream& ofs)
 {
-	printAttributes(vec);
+	printAttributes(vec, ofs);
 
 	for (typename VECTOR<T>::size_type i = 0; i < vec.size(); i++)
-	{
-		std::cout << "[" << vec[i] << "]";
-		if (i + 1 < vec.size())
-			std::cout << " ";
-	}
-	std::cout << std::endl;
+		ofs << "[" << vec[i] << "]";
+	ofs << std::endl;
 }
 
-void	test_constructors(void)
+void	test_constructors(std::ofstream& ofs)
 {
 	std::cout << YELLOW << "VECTOR() testing:" << RESET << std::endl;
 	VECTOR<float> defaultVec;
@@ -44,7 +40,7 @@ void	test_constructors(void)
 		std::cout << RED << "error default constructor: size not equal at 0" << RESET << std::endl;
 	if (defaultVec.capacity() != 0)
 		std::cout << RED << "error default constructor: capacity not equal at 0" << RESET << std::endl;
-	printVector(defaultVec);
+	printVector(defaultVec, ofs);
 	
 	std::cout << YELLOW << "VECTOR(n) testing:" << RESET << std::endl;
 	VECTOR<float> Vec(3);
@@ -52,7 +48,7 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(n): size not equal at 0" << RESET << std::endl;
 	if (Vec.capacity() != 3)
 		std::cout << RED << "error default constructor: capacity no at the right value" << RESET << std::endl;
-	printVector(Vec);
+	printVector(Vec, ofs);
 	if (Vec[0] || Vec[1] || Vec[2])
 		std::cout << RED << "error default constructor: value not at 0" << RESET << std::endl;
 	
@@ -62,10 +58,10 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(n, v): size not at the right value" << RESET << std::endl;
 	if (fillVec.capacity() != 5)
 		std::cout << RED << "error constructor(n, v): capacity not at the right value" << RESET << std::endl;
-	printVector(fillVec);
+	printVector(fillVec, ofs);
 	for (VECTOR<float>::size_type i = 0; i < 5; i++)
 	{
-		std::cout << fillVec[i] << "\n";
+		ofs << fillVec[i] << std::endl;
 		if (fillVec[i] != 50.5)
 			std::cout << RED << "error constructor(n, v): elements not at the right value" << RESET << std::endl;
 	}
@@ -76,7 +72,7 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(begin, end): size not at the right value" << RESET << std::endl;
 	if (rangeVec.capacity() != 5)
 		std::cout << RED << "error constructor(begin, end): capacity not at the right value" << RESET << std::endl;
-	printVector(rangeVec);
+	printVector(rangeVec, ofs);
 	for (VECTOR<float>::size_type i = 0; i < 5; i++)
 	{
 		if (rangeVec[i] != 50.5)
@@ -89,7 +85,7 @@ void	test_constructors(void)
 		std::cout << RED << "error copy constructor: size not at the right value" << RESET << std::endl;
 	if (copyVec.capacity() != 5)
 		std::cout << RED << "error copy constructor: capacity not at the right value" << RESET << std::endl;
-	printVector(copyVec);
+	printVector(copyVec, ofs);
 	if (&(copyVec[0]) == &(rangeVec[0]))
 		std::cout << RED << "error copy constructor: Not a deep copy" << RESET << std::endl;
 	for (VECTOR<float>::size_type i = 0; i < 5; i++)
@@ -104,7 +100,7 @@ void	test_constructors(void)
 		std::cout << RED << "error assign constructor: size not at the right value" << RESET << std::endl;
 	if (copyVec.capacity() != 5)
 		std::cout << RED << "error assign constructor: capacity not at the right value" << RESET << std::endl;
-	printVector(copyOperatorVec);	
+	printVector(copyOperatorVec, ofs);	
 	if (&(copyOperatorVec[0]) == &(copyVec[0]))
 		std::cout << RED << "error assign copy constructor: Not a deep copy" << RESET << std::endl;
 	for (VECTOR<float>::size_type i = 0; i < 5; i++)
@@ -121,11 +117,11 @@ void	test_constructors(void)
 		std::cout << RED << "error constructor(tab.begin, tab.end): size not at the right value" << RESET << std::endl;
 	if (tabVec.capacity() != 4)
 		std::cout << RED << "error constructor(tab.begin, tab.end): capacity not at the right value" << RESET << std::endl;
-	printVector(tabVec);
+	printVector(tabVec, ofs);
 	VECTOR<float>::value_type val = 3;
 	for (VECTOR<float>::size_type i = 0; i < 4; i++)
 	{
-		std::cout << val << std::endl;
+		ofs << val << std::endl;
 		if (tabVec[i] != val)
 			std::cout << RED << "error constructor(tab.begin, tab.end): elements not at the right value" << RESET << std::endl;
 		val *= 10;

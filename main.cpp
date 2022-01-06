@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:50 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 09:05:48 by nayache          ###   ########.fr       */
+/*   Updated: 2022/01/06 14:30:49 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <cstddef>
 #include <typeinfo>
 #include <stdlib.h>
+#include <assert.h>
 
 int	main()
 {	
@@ -75,5 +76,8 @@ int	main()
 	std::cout << std::endl;
 	std::string testt = ft::itoa(-145005);
 	std::cout << testt << std::endl;
+	tst = bar2;
+	if (bar2 < tst)
+		std::cout << "lala\n";
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 10:28:56 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 14:01:58 by nayache          ###   ########.fr       */
+/*   Updated: 2022/01/06 17:47:04 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <vector>
 # include "vector.hpp"
 # include <iostream>
+# include <fstream>
 # include "test_constructors.hpp"
 # include "test_iterators.hpp"
 # include "test_capacity.hpp"

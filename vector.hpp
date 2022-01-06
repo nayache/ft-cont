@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 15:53:16 by nayache          ###   ########.fr       */
+/*   Updated: 2022/01/06 18:31:31 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "vector_iterator.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
+# include "lexicographical.hpp"
 # include <limits>
 # include <cstddef>
 
@@ -87,7 +88,7 @@ class	vector
 				this->_alloc.construct(_data + i, *(x._data + i));
 		}
 
-		vector& operator=(vector& src)
+		vector& operator=(const vector& src)
 		{
 			if (src._size > this->_capacity && this->_data)
 			{
@@ -96,7 +97,7 @@ class	vector
 			}
 			this->_size = src._size;
 			this->_capacity = src._capacity;
-			this->assign(src.begin(), src.end());
+			this->assign(src.cbegin(), src.cend());
 			return (*this);
 		}
 
@@ -307,11 +308,11 @@ class	vector
 		//ITERATORS funcs
 
 		iterator			begin() { return (iterator(this->_data)); }
-		const_iterator		cbegin() { return (const_iterator(this->_data)); }
+		const_iterator		cbegin() const { return (const_iterator(this->_data)); }
 		reverse_iterator	rbegin() { return (reverse_iterator(this->end() - 1)); }
 		const_reverse_iterator	crbegin() { return (const_reverse_iterator(this->end() - 1)); }
 		iterator		end() { return (this->begin() + this->_size); }
-		const_iterator	cend() { return (this->cbegin() + this->_size); }
+		const_iterator	cend() const{ return (this->cbegin() + this->_size); }
 		reverse_iterator	rend() { return (reverse_iterator(this->begin() - 1)); }
 		const_reverse_iterator	crend() { return (const_reverse_iterator(this->begin() - 1)); }
 		
@@ -320,7 +321,7 @@ class	vector
 		size_type	size() const { return (this->_size); }
 		size_type	capacity() const { return (this->_capacity); }
 		size_type	max_size() const { return (this->_alloc.max_size()); }
-		bool		empty() const { return(this->_size == 0); }
+		bool		empty() const { return (this->_size == 0); }
 		
 		void	resize(size_type n, value_type val = value_type())
 		{
@@ -378,6 +379,40 @@ class	vector
 		pointer			_data;
 		size_type		_size;
 		size_type		_capacity;
-};	
+};
+
+template <class T, class Alloc>
+bool	operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
+	if (lhs.size() != rhs.size())
+		return (false);
+	for (typename vector<T>::size_type i = 0; i < lhs.size(); i++)
+	{
+		if (lhs[i] != rhs[i])
+			return (false);
+	}
+	return (true);
+}
+template <class T, class Alloc>
+bool	operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
+	return (!(lhs == rhs));
+}
+template <class T, class Alloc>
+bool	operator<(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
+	return (ft::lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(),
+	rhs.cend()));
+}
+template <class T, class Alloc>
+bool	operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
+	return (rhs < lhs);
+}
+template <class T, class Alloc>
+bool	operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
+	return (!(rhs < lhs));
+}
+template <class T, class Alloc>
+bool	operator>=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
+	return (!(lhs < rhs));
+}
+
 }
 #endif
