@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 10:00:41 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/28 16:43:00 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/10 11:17:37 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,10 @@ class	VecIterator
 		return (*this);
 	}
 
+	reference	operator[](difference_type b)
+	{
+		return (*(this->_p + b));
+	}
 
 	bool	operator!=(const VecIterator& rhs)
 	{
