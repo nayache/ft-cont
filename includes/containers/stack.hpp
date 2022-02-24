@@ -6,14 +6,14 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 10:28:15 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/22 14:42:29 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:41:33 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STACK_HPP
 # define STACK_HPP
 
-# include "includes/vector.hpp"
+# include "vector.hpp"
 
 namespace ft {
 template <class T, class Container = ft::vector<T> >
@@ -54,7 +54,7 @@ class stack
 		return lhs.c <= rhs.c;
 	}
 	friend bool operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c <= rhs.c;
+		return lhs.c > rhs.c;
 	}
 	friend bool operator>=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
 		return lhs.c >= rhs.c;

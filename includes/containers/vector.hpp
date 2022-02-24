@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 14:39:02 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:48:18 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ class	vector
 			}
 			this->_size = src._size;
 			this->_capacity = src._capacity;
-			this->assign(src.cbegin(), src.cend());
+			this->assign(src.begin(), src.end());
 			return (*this);
 		}
 
@@ -310,13 +310,11 @@ class	vector
 		//ITERATORS funcs
 
 		iterator			begin() { return (iterator(this->_data)); }
-		const_iterator		cbegin() const { return (const_iterator(this->_data)); }
+		const_iterator		begin() const { return (const_iterator(this->_data)); }
 		reverse_iterator	rbegin() { return (reverse_iterator(this->end() - 1)); }
-		const_reverse_iterator	crbegin() const { return (const_reverse_iterator(this->end() - 1)); }
 		iterator		end() { return (this->begin() + this->_size); }
-		const_iterator	cend() const{ return (this->cbegin() + this->_size); }
+		const_iterator	end() const { return (this->begin() + this->_size); }
 		reverse_iterator	rend() { return (reverse_iterator(this->begin() - 1)); }
-		const_reverse_iterator	crend() const { return (const_reverse_iterator(this->begin() - 1)); }
 		
 		/// CAPACITY
 		
@@ -397,12 +395,12 @@ bool	operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
 }
 template <class T, class Alloc>
 bool	operator<(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
-	return (ft::lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(),
-	rhs.cend()));
+	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+	rhs.end()));
 }
 template <class T, class Alloc>
 bool	operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
-	return (rhs < lhs);
+	return (!(lhs <= rhs));
 }
 template <class T, class Alloc>
 bool	operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
