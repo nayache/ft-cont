@@ -6,13 +6,13 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/29 09:07:44 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/24 14:42:23 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
-# include "iterator_traits.hpp"
+# include "iterators/iterator_traits.hpp"
 
 namespace ft {
 
@@ -60,7 +60,6 @@ std::string	itoa(long long int number)
 	
 	return (dest);
 }
-
 }
 
 #endif

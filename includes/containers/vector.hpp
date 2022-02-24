@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/01/06 18:31:31 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/24 14:39:02 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 # include <iostream>
 # include <iterator>
 # include <stdexcept>
-# include "utils.hpp"
-# include "reverse_iterator.hpp"
-# include "vector_iterator.hpp"
-# include "enable_if.hpp"
-# include "is_integral.hpp"
-# include "lexicographical.hpp"
 # include <limits>
 # include <cstddef>
+# include "../iterators/reverse_iterator.hpp"
+# include "../iterators/vector_iterator.hpp"
+# include "../enable_if.hpp"
+# include "../is_integral.hpp"
+# include "../lexicographical.hpp"
+# include "../utils.hpp"
 
 namespace ft {
 template <class T, class Allocator = std::allocator<T> >
@@ -159,7 +159,8 @@ class	vector
 
 		void	pop_back()
 		{
-			this->erase(this->end() - 1);
+			if (this->_size)
+				this->_size--;
 		}
 
 		void	clear()
@@ -205,7 +206,7 @@ class	vector
 				if (position == this->end())
 				{
 					push_back(val);
-					return (this->end() - 1);
+					return (this->end());
 				}
 				tmp = *it;
 				*it = val;
@@ -229,7 +230,8 @@ class	vector
 		}
 
 		template <class InputIterator>
-		void	insert(iterator position, InputIterator first, InputIterator last)
+		void	insert(iterator position, InputIterator first, InputIterator last,
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NullPtr)
 		{
 			while (first != last)
 			{
@@ -310,11 +312,11 @@ class	vector
 		iterator			begin() { return (iterator(this->_data)); }
 		const_iterator		cbegin() const { return (const_iterator(this->_data)); }
 		reverse_iterator	rbegin() { return (reverse_iterator(this->end() - 1)); }
-		const_reverse_iterator	crbegin() { return (const_reverse_iterator(this->end() - 1)); }
+		const_reverse_iterator	crbegin() const { return (const_reverse_iterator(this->end() - 1)); }
 		iterator		end() { return (this->begin() + this->_size); }
 		const_iterator	cend() const{ return (this->cbegin() + this->_size); }
 		reverse_iterator	rend() { return (reverse_iterator(this->begin() - 1)); }
-		const_reverse_iterator	crend() { return (const_reverse_iterator(this->begin() - 1)); }
+		const_reverse_iterator	crend() const { return (const_reverse_iterator(this->begin() - 1)); }
 		
 		/// CAPACITY
 		
@@ -325,9 +327,6 @@ class	vector
 		
 		void	resize(size_type n, value_type val = value_type())
 		{
-			if (n == 0)
-				return;
-			
 			size_type i = 0;
 			if (n > this->_size)
 			{
