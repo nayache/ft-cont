@@ -6,11 +6,12 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 14:51:12 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 15:49:03 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/24 16:10:32 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/containers/stack.hpp"
+#include "test.hpp"
 #include <stack>
 #include <cassert>
 
@@ -18,6 +19,8 @@ int	main(void)
 {
 	//-----------EMPTY()----------//
 
+	std::cout << YELLOW << "empty() testing.." << RESET << std::endl;
+	
 	STACK<int> emptyStack;
 	STACK<int> noEmptyStack;
 
@@ -32,8 +35,12 @@ int	main(void)
 	assert(emptyStack.empty() == false);
 	assert(noEmptyStack.empty() == true);
 
+	std::cout << GREEN << "empty() success" << RESET << std::endl;
+	
 	//-----------SIZE()-----------//
 
+	std::cout << YELLOW << "size() testing.." << RESET << std::endl;
+	
 	STACK<int> stack;
 
 	assert(stack.size() == 0);
@@ -43,9 +50,13 @@ int	main(void)
 	stack.push(1);
 	
 	assert(stack.size() == 3);
+	
+	std::cout << GREEN << "size() success" << RESET << std::endl;
 
 	//---------TOP()-------------//
 
+	std::cout << YELLOW << "top() testing.." << RESET << std::endl;
+	
 	STACK<std::string> stackTop;
 
 	stackTop.push("first push");
@@ -61,8 +72,12 @@ int	main(void)
 
 	assert(stackTop.top() == "second push");
 
+	std::cout << GREEN << "top() success" << RESET << std::endl;
+	
 	//------------PUSH()------------//
 
+	std::cout << YELLOW << "push() testing.." << RESET << std::endl;
+	
 	STACK<int> stck;
 
 	for (int i = 0; i < 10; i++)
@@ -81,8 +96,12 @@ int	main(void)
 
 	assert(stck.size() == 15);
 	assert(stck.top() == 50);
+	
+	std::cout << GREEN << "push() success" << RESET << std::endl;
 
 	//-----------POP()-----------//
+	
+	std::cout << YELLOW << "pop() testing.." << RESET << std::endl;
 
 	STACK<int> stacky;
 
@@ -100,9 +119,13 @@ int	main(void)
 		stacky.pop();
 
 	assert(stacky.size() == 0);
+	
+	std::cout << GREEN << "pop() success" << RESET << std::endl;
 
 	//-----------RELATIONAL-OPERATORS-------//
 
+	std::cout << YELLOW << "relational operators() testing.." << RESET << std::endl;
+	
 	STACK<int> test1;
 	STACK<int> test2;
 
@@ -127,5 +150,7 @@ int	main(void)
 	assert(test1 <= test2);
 	assert(test1 != test2);
 
+	std::cout << GREEN << "relational operators() success.." << RESET << std::endl;
+	
 	return (0);
 }

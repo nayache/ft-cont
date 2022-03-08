@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 10:28:56 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 14:40:54 by nayache          ###   ########.fr       */
+/*   Updated: 2022/02/24 16:08:36 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	printVector(ft::vector<T>& vec, std::ofstream& ofs)
 {
 	printAttributes(vec, ofs);
 
-	for (typename VECTOR<T>::size_type i = 0; i < vec.size(); i++)
+	for (typename ft::vector<T>::size_type i = 0; i < vec.size(); i++)
 		ofs << "[" << vec[i] << "]";
 	ofs << std::endl;
 }
@@ -61,7 +61,7 @@ void	printVector(std::vector<T>& vec, std::ofstream& ofs)
 {
 	printAttributes(vec, ofs);
 
-	for (typename VECTOR<T>::size_type i = 0; i < vec.size(); i++)
+	for (typename std::vector<T>::size_type i = 0; i < vec.size(); i++)
 		ofs << "[" << vec[i] << "]";
 	ofs << std::endl;
 }

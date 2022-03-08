@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/22 15:31:27 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/22 16:13:58 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/08 17:09:43 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,29 +24,18 @@ struct pair
 	first_type first;
 	second_type second;
 	
-	pair()
-	{
-		first = first_type();
-		second = second_type();
-	}
+	pair() : first(first_type()), second(second_type()) {}
 
 	template <class U, class V>
-	pair(const pair<U,V>& pr)
-	{
-		first = first_type(pr.first);
-		second = second_type(pr.second);
-	}
+	pair(const pair<U,V>& pr) : first(pr.first), second(pr.second) {}
 
-	pair(const first_type& a, const second_type& b)
-	{
-		first = first_type(a);
-		second = second_type(b);
-	}
+	pair(const first_type& a, const second_type& b) : first(a), second(b) {}
 
 	pair&	operator=(const pair& pr)
 	{
-		first = first_type(pr.first);
-		second = second_type(pr.second);
+		this->first = pr.first;
+		this->second = pr.second;
+		return (*this);
 	}
 
 	void	swap(pair& pr)
@@ -63,7 +52,7 @@ struct pair
 
 template <class T1, class T2>
   bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-{ return lhs.first==rhs.first && lhs.second==rhs.second; }
+{ return lhs.first == rhs.first && lhs.second == rhs.second; }
 
 template <class T1, class T2>
   bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
@@ -84,6 +73,14 @@ template <class T1, class T2>
 template <class T1, class T2>
   bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 { return !(lhs<rhs); }
+
+
+template <class T1, class T2>
+pair<T1, T2> make_pair(T1 x, T2 y)
+{
+	return (pair<T1, T2>(x, y));
+}
+
 }
 
 #endif
