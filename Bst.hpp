@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/08 16:57:26 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/10 16:55:17 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ class Node
 
 	typedef ft::pair<K, V>	value_type;
 	
-	Node() : _empty(true),_left(NULL), _right(NULL) {}
+	Node() : _empty(true),_left(NULL), _right(NULL) , _parent(NULL){}
 
-	Node(const value_type& src) : _empty(false), _left(NULL), _right(NULL), _pair(src) {}
+	Node(const value_type& src) : _empty(false), _left(NULL), _right(NULL), _parent(NULL), _pair(src) {}
 
 	~Node() {}
 
@@ -55,6 +55,7 @@ class Node
 	bool					_empty;
 	Node*					_left;
 	Node*					_right;
+	Node*					_parent;
 	value_type				_pair;
 	//--------------------------------
 };
@@ -81,6 +82,13 @@ class BinarySearchTree
 
 	~BinarySearchTree() { freeTree(this->_main); }
 
+	bool	keyExist(node_pointer Bst, key_type key)
+	{
+		node_pointer tmp = searchPlace(Bst, key);
+		
+		return (tmp->_pair.first == key);
+	}
+	
 	void	addNode(pair_type pair)
 	{
 		if (keyExist(this->_main, pair.first) == true)
@@ -93,6 +101,8 @@ class BinarySearchTree
 		node_pointer newNode = this->_alloc.allocate(1);
 		this->_alloc.construct(newNode, node_type(pair));
 		node_pointer place = searchPlace(this->_main, pair.first);
+
+		newNode->_parent = place;
 		
 		if (pair.first < place->_pair.first)
 			place->_left = newNode;
@@ -108,6 +118,15 @@ class BinarySearchTree
 			return (searchKey(current->_left, k));
 		else
 			return (searchKey(current->_left, k));
+	}
+	
+	node_pointer	minKey() const
+	{
+		node_pointer tmp = this->_main;
+
+		while (tmp->_left != NULL)
+			tmp = tmp->_left;
+		return (tmp);
 	}
 
 //	private:
@@ -133,12 +152,6 @@ class BinarySearchTree
 		this->_alloc.deallocate(Bst, 1);
 	}
 	
-	bool	keyExist(node_pointer Bst, key_type key)
-	{
-		node_pointer tmp = searchPlace(Bst, key);
-		
-		return (tmp->_pair.first == key);
-	}
 
 	node_pointer	searchPlace(node_pointer Bst, key_type key)
 	{
@@ -160,6 +173,13 @@ class BinarySearchTree
 		return (Bst);
 	}
 };
+
+template <class K, class V>
+std::ostream&	operator<<(std::ostream& os, Node<K, V> src)
+{
+	os << "(" << "\033[1;33m" << src._pair.first << "\033[0;28m" << " | " << "\033[1;33m" << src._pair.second << "\033[0;28m" << ")";
+	return (os);
+}
 
 }
 

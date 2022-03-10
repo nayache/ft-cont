@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 12:09:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/08 17:15:28 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/10 17:22:11 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,27 @@
 #include <utility>
 #include "includes/pair.hpp"
 //#include "Bst.hpp"
+# include "map_iterator.hpp"
 
 int	main()
 {
 	ft::map<int, std::string> testmap;
-//	testmap[33] = "salut";
 
-	ft::pair<int, std::string> pair(42, "SALUT");
-	ft::BinarySearchTree<int, std::string>	test;
-//
-	test._main->setValues(15, "fifteen");
-	test.addNode(ft::pair<const int, std::string>(10, "ten"));
-	test.addNode(ft::pair<const int, std::string>(20, "twenty"));
-/*	test.addNode(9, "nine");
-	test.addNode(11, "eleven");
-	test.addNode(8, "eight");
-	test.addNode(8, "lalala");
-	std::cout << test._main->_pair.first << std::endl;
-	std::cout << test._main->_left->_pair.first << std::endl;
-	std::cout << test._main->_left->_left->_pair.first << std::endl;
-	std::cout << test._main->_left->_left->_right->_pair.first << std::endl;
-	std::cout << test._main->_left->_right->_pair.first << std::endl;
-	std::cout << test._main->_left->_left->_right->_left->_pair.first << std::endl;
-	std::cout << test._main->_left->_left->_right->_left->_pair.second << std::endl;*/
+	testmap._tree._main->setValues(15, "fifteen");
+	testmap._tree.addNode(ft::pair<int, std::string>(10, "ten"));
+	testmap._tree.addNode(ft::pair<int, std::string>(20, "twenty"));
+	testmap._tree.addNode(ft::pair<int, std::string>(16, "seize"));
+	testmap._tree.addNode(ft::pair<int, std::string>(7, "seven"));
+	testmap._tree.addNode(ft::pair<int, std::string>(9, "nine"));
+	testmap._tree.addNode(ft::pair<int, std::string>(8, "eight"));
+	testmap._tree.addNode(ft::pair<int, std::string>(12, "douze"));
+	
+	ft::map<int, std::string>::const_iterator it = testmap.begin();
+	
+	while (it != NULL)
+	{
+		std::cout << *it << std::endl;
+		++it;
+	}
 	return 0;
-}
+} 

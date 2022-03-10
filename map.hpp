@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/08 17:16:29 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/10 17:14:51 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,11 @@ class	map
 	{
 		std::cout << "copy constructor\n";
 	}*/
+
+	iterator	begin() { return (iterator(this->_tree.minKey())); }
+	const_iterator	begin() const { return (const_iterator(this->_tree.minKey())); }
+	iterator	end() { return (iterator(NULL)); }
+	const_iterator	end() const { return (const_iterator(NULL)); }
 
 	public:
 
