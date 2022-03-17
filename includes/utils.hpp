@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 14:42:23 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/14 15:51:19 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,31 @@ std::string	itoa(long long int number)
 	
 	return (dest);
 }
+
+ /**
+    *   Use a boolean to typedef either type 1 or type 2.
+    */
+template <bool isConst, typename isFalse, typename isTrue>
+struct TrueType {};
+
+    /**
+    *   Typedef: pointer, ref...
+    */
+template <typename isFalse, typename isTrue>
+struct TrueType<false, isFalse, isTrue>
+{
+    typedef isFalse type;
+};
+
+    /**
+    *   Typedef: const pointer, const ref...
+    */
+template <typename isFalse, typename isTrue>
+struct TrueType<true, isFalse, isTrue>
+{
+    typedef isTrue type;
+};
+
 }
 
 #endif

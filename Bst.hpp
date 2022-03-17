@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/10 16:55:17 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/17 18:31:12 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,52 +74,69 @@ class BinarySearchTree
 	typedef V							value_type;
 
 	
-	BinarySearchTree(const alloc_type alloc = alloc_type()) : _alloc(alloc)
+	BinarySearchTree(const alloc_type alloc = alloc_type()) : _alloc(alloc), _main(NULL)
 	{
-		this->_main = this->_alloc.allocate(1);
-		this->_alloc.construct(this->_main, node_type());
+		this->_begin = this->_alloc.allocate(1);
+		this->_alloc.construct(this->_begin, node_type());
+		this->_end = this->_alloc.allocate(1);
+		this->_alloc.construct(this->_end, node_type());
 	}
 
-	~BinarySearchTree() { freeTree(this->_main); }
-
-	bool	keyExist(node_pointer Bst, key_type key)
+	~BinarySearchTree()
 	{
-		node_pointer tmp = searchPlace(Bst, key);
-		
-		return (tmp->_pair.first == key);
-	}
-	
-	void	addNode(pair_type pair)
-	{
-		if (keyExist(this->_main, pair.first) == true)
+		if (this->_begin != NULL)
 		{
-			pair_type currentPair = searchKey(this->_main, pair.first);
-			currentPair.second = pair.second;
-			return;
+			this->_alloc.destroy(this->_begin);
+			this->_alloc.deallocate(this->_begin, 1);
 		}
+		if (this->_end != NULL)
+		{
+			this->_alloc.destroy(this->_end);
+			this->_alloc.deallocate(this->_end, 1);
+		}
+		freeTree(this->_main); 
+	}
 
+	node_pointer	createNode(node_pointer parent, pair_type pair)
+	{
 		node_pointer newNode = this->_alloc.allocate(1);
 		this->_alloc.construct(newNode, node_type(pair));
-		node_pointer place = searchPlace(this->_main, pair.first);
-
-		newNode->_parent = place;
 		
-		if (pair.first < place->_pair.first)
-			place->_left = newNode;
-		else
-			place->_right = newNode;
-	}
+		if (parent == NULL)
+		{
+			this->_begin->_right = newNode;
+			this->_end->_left = newNode;
+		}
+		else if (newNode->_pair.first < this->_begin->_right->_pair.first)
+			this->_begin->_right = newNode;
+		else if (newNode->_pair.first > this->_end->_left->_pair.first)
+			this->_end->_right = newNode;
 
-	pair_type&	searchKey(node_pointer current, const key_type& k)
-	{
-		if (k == current->_pair.first)
-			return (current->_pair);
-		else if (k < current->_pair.first)
-			return (searchKey(current->_left, k));
-		else
-			return (searchKey(current->_left, k));
+		newNode->_parent = parent;
+
+		return (newNode);
 	}
 	
+	node_pointer	insertNode(node_pointer root, node_pointer parent, node_pointer* ret, const pair_type& pair)
+	{
+		if (root == NULL)
+			return ((*ret = createNode(parent, pair)));
+
+		else if (pair.first < root->_pair.first)
+		{
+			parent = root;
+			root->_left = insertNode(root->_left, parent, ret, pair);
+		}
+		
+		else
+		{
+			parent = root;
+			root->_right = insertNode(root->_right, parent, ret, pair);
+		}
+		
+		return root;
+	}
+
 	node_pointer	minKey() const
 	{
 		node_pointer tmp = this->_main;
@@ -132,11 +149,13 @@ class BinarySearchTree
 //	private:
 	//--------------attributes----------
 	
-	node_pointer			_main;
 	alloc_type				_alloc;
+	node_pointer			_main;
+	node_pointer			_begin;
+	node_pointer			_end;
 	
 	//---------------------------------
-	
+
 	void	freeTree(node_pointer Bst)
 	{
 		if (Bst == NULL)
@@ -153,24 +172,25 @@ class BinarySearchTree
 	}
 	
 
-	node_pointer	searchPlace(node_pointer Bst, key_type key)
+	node_pointer	searchByKey(node_pointer Bst, key_type key)
 	{
-
+		if (key == Bst->_pair.first)
+			return (Bst);
+		
 		if (key < Bst->_pair.first)
 		{
 			if (Bst->_left == NULL)
-				return (Bst);
+				return (NULL);
 			else
-				return searchPlace(Bst->_left, key);
+				return searchByKey(Bst->_left, key);
 		}
 		else
 		{
 			if (Bst->_right == NULL)
-				return (Bst);
+				return (NULL);
 			else
-				return searchPlace(Bst->_right, key);
+				return searchByKey(Bst->_right, key);
 		}
-		return (Bst);
 	}
 };
 
