@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/18 18:43:01 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/18 19:09:05 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,9 @@ class BinarySearchTree
 			return ((*ret = createNode(parent, pair)));
         
 		else if (pair.first < root->_pair.first)
-        {
+		{
 			parent = root;
-            root->_left = insertNode(root->_left, parent, ret, pair);
+			root->_left = insertNode(root->_left, parent, ret, pair);
 
             if (height(root->_left) - height(root->_right) == 2)
             {
@@ -146,9 +146,8 @@ class BinarySearchTree
                     root = singleLeftRotate(root);
                 else
                     root = doubleLeftRotate(root);
-            }
+			}
 		}
-
 		root->_height = std::max(height(root->_left), height(root->_right)) + 1;
 		return (root);
 	}
@@ -219,14 +218,14 @@ class BinarySearchTree
 		{
 			if (root->_right && root->_left)
 			{
-            	node_pointer tmp = findMin(root->_right);
-            	root->_pair.first = tmp->_pair.first;
-            	root->_right = remove(root->_pair.first, root->_right);
+				node_pointer tmp = findMin(root->_right);
+				root->_pair.first = tmp->_pair.first;
+				root->_right = remove(root->_pair.first, root->_right);
 			}
 			else
 			{
-            	node_pointer tmp = root->_left ? root->_left : root->_right;
-            	if (tmp == NULL)
+				node_pointer tmp = root->_left ? root->_left : root->_right;
+				if (tmp == NULL)
 				{
 					tmp = root;
 					root = NULL;
@@ -234,9 +233,9 @@ class BinarySearchTree
 				else
 					root->copy(*tmp);
 				this->_alloc.destroy(tmp);
-            	this->_alloc.deallocate(tmp, 1);
+				this->_alloc.deallocate(tmp, 1);
 			}
-        }
+		}
         if (root == NULL)
             return root;
 
@@ -244,37 +243,36 @@ class BinarySearchTree
 		int	balance = getBalance(root);
 		
 		if (balance > 1 && getBalance(root->_left) >= 0)
-        	return singleRightRotate(root);
+			return singleRightRotate(root);
     	
 		if (balance < -1 &&  getBalance(root->_right) <= 0)
-        	return singleLeftRotate(root);
+			return singleLeftRotate(root);
     	
 		if (balance > 1 &&  getBalance(root->_left) < 0)
 		{
-        	root->_left = singleLeftRotate(root->_left);
-        	return singleRightRotate(root);
+			root->_left = singleLeftRotate(root->_left);
+			return singleRightRotate(root);
 		}
 
-		
 		if (balance < -1 && getBalance(root->_right) > 0)
 		{
-        	root->_right = singleRightRotate(root->_right);
-        	return singleLeftRotate(root);
-    	}
-        return (root);
-    }
+			root->_right = singleRightRotate(root->_right);
+			return singleLeftRotate(root);
+		}
+		return (root);
+	}
 
 	int getBalance(node_pointer root)  
 	{  
-   		if (root == NULL)
-        	return (0);
+		if (root == NULL)
+			return (0);
 		return (height(root->_left) - height(root->_right));
 	}
 
-    int height(node_pointer root)
-    {
-        return (root == NULL ? -1 : root->_height);
-    }
+	int height(node_pointer root)
+	{
+		return (root == NULL ? -1 : root->_height);
+	}
 
 	node_pointer	minKey() const
 	{
