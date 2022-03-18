@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/17 18:31:12 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/18 18:43:01 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <iostream>
 # include <memory>
 # include <functional>
+# include <algorithm>
 
 namespace ft {
 template <class K, class V>
@@ -27,10 +28,10 @@ class Node
 
 	typedef ft::pair<K, V>	value_type;
 	
-	Node() : _empty(true),_left(NULL), _right(NULL) , _parent(NULL){}
+	Node() : _left(NULL), _right(NULL) , _parent(NULL){}
 
-	Node(const value_type& src) : _empty(false), _left(NULL), _right(NULL), _parent(NULL), _pair(src) {}
-
+	Node(const value_type& src) : _left(NULL), _right(NULL), _parent(NULL), _pair(src) {}
+	
 	~Node() {}
 
 	Node&	operator=(const	Node& src)
@@ -38,25 +39,23 @@ class Node
 		this = &src;
 		return (*this);
 	}
-
-	bool	isEmpty() { return (_empty == true); }
 	
-	void	setValues(K key, V value)
+	void	copy(const Node& src)
 	{
-		if (this->_empty == true)
-		{
-			this->_pair = ft::make_pair(key, value);
-			this->_empty = false;
-		}
+		this->_parent = src._parent;
+		this->_left = src._left;
+		this->_right = src._right;
+		this->_height = src._height;
+		this->_pair = src._pair;
 	}
 
 //	private:
 	//---------attributes-------------
-	bool					_empty;
 	Node*					_left;
 	Node*					_right;
 	Node*					_parent;
 	value_type				_pair;
+	int						_height;
 	//--------------------------------
 };
 
@@ -110,8 +109,9 @@ class BinarySearchTree
 		else if (newNode->_pair.first < this->_begin->_right->_pair.first)
 			this->_begin->_right = newNode;
 		else if (newNode->_pair.first > this->_end->_left->_pair.first)
-			this->_end->_right = newNode;
+			this->_end->_left = newNode;
 
+		newNode->_height = 0;
 		newNode->_parent = parent;
 
 		return (newNode);
@@ -121,21 +121,160 @@ class BinarySearchTree
 	{
 		if (root == NULL)
 			return ((*ret = createNode(parent, pair)));
-
+        
 		else if (pair.first < root->_pair.first)
-		{
+        {
 			parent = root;
-			root->_left = insertNode(root->_left, parent, ret, pair);
-		}
-		
-		else
-		{
+            root->_left = insertNode(root->_left, parent, ret, pair);
+
+            if (height(root->_left) - height(root->_right) == 2)
+            {
+                if (pair.first < root->_left->_pair.first)
+                    root = singleRightRotate(root);
+                else
+                    root = doubleRightRotate(root);
+            }
+        }
+        else if (pair.first > root->_pair.first)
+        {
 			parent = root;
-			root->_right = insertNode(root->_right, parent, ret, pair);
+            root->_right = insertNode(root->_right, parent, ret, pair);
+
+            if (height(root->_right) - height(root->_left) == 2)
+            {
+                if (pair.first > root->_right->_pair.first)
+                    root = singleLeftRotate(root);
+                else
+                    root = doubleLeftRotate(root);
+            }
 		}
-		
-		return root;
+
+		root->_height = std::max(height(root->_left), height(root->_right)) + 1;
+		return (root);
 	}
+    
+	node_pointer	singleRightRotate(node_pointer &root)
+    {
+        node_pointer tmp = root->_left;
+        root->_left = tmp->_right;
+        tmp->_right = root;
+        root->_height = std::max(height(root->_left), height(root->_right)) + 1;
+        tmp->_height = std::max(height(tmp->_left), root->_height) + 1;
+        return (tmp);
+    }
+
+    node_pointer singleLeftRotate(node_pointer &root)
+    {
+        node_pointer tmp = root->_right;
+        root->_right = tmp->_left;
+        tmp->_left = root;
+        root->_height = std::max(height(root->_left), height(root->_right)) + 1;
+        tmp->_height = std::max(height(root->_right), root->_height) + 1 ;
+        return (tmp);
+    }
+
+    node_pointer doubleLeftRotate(node_pointer &root)
+    {
+        root->_right = singleRightRotate(root->_right);
+        return (singleLeftRotate(root));
+    }
+
+    node_pointer doubleRightRotate(node_pointer &root)
+    {
+        root->_left = singleLeftRotate(root->_left);
+        return (singleRightRotate(root));
+    }
+
+	node_pointer findMin(node_pointer root)
+    {
+        if (root == NULL)
+            return NULL;
+        else if (root->_left == NULL)
+            return (root);
+        else
+            return (findMin(root->_left));
+    }
+
+    node_pointer findMax(node_pointer root)
+    {
+        if (root == NULL)
+            return NULL;
+        else if (root->_right == NULL)
+            return (root);
+        else
+            return (findMax(root->_right));
+    }
+
+    node_pointer remove(key_type key, node_pointer root)
+    {
+        if (root == NULL)
+            return NULL;
+
+        if (key < root->_pair.first)
+            root->_left = remove(key, root->_left);
+        else if (key > root->_pair.first)
+            root->_right = remove(key, root->_right);
+
+        else
+		{
+			if (root->_right && root->_left)
+			{
+            	node_pointer tmp = findMin(root->_right);
+            	root->_pair.first = tmp->_pair.first;
+            	root->_right = remove(root->_pair.first, root->_right);
+			}
+			else
+			{
+            	node_pointer tmp = root->_left ? root->_left : root->_right;
+            	if (tmp == NULL)
+				{
+					tmp = root;
+					root = NULL;
+				}
+				else
+					root->copy(*tmp);
+				this->_alloc.destroy(tmp);
+            	this->_alloc.deallocate(tmp, 1);
+			}
+        }
+        if (root == NULL)
+            return root;
+
+        root->_height = std::max(height(root->_left), height(root->_right)) + 1;
+		int	balance = getBalance(root);
+		
+		if (balance > 1 && getBalance(root->_left) >= 0)
+        	return singleRightRotate(root);
+    	
+		if (balance < -1 &&  getBalance(root->_right) <= 0)
+        	return singleLeftRotate(root);
+    	
+		if (balance > 1 &&  getBalance(root->_left) < 0)
+		{
+        	root->_left = singleLeftRotate(root->_left);
+        	return singleRightRotate(root);
+		}
+
+		
+		if (balance < -1 && getBalance(root->_right) > 0)
+		{
+        	root->_right = singleRightRotate(root->_right);
+        	return singleLeftRotate(root);
+    	}
+        return (root);
+    }
+
+	int getBalance(node_pointer root)  
+	{  
+   		if (root == NULL)
+        	return (0);
+		return (height(root->_left) - height(root->_right));
+	}
+
+    int height(node_pointer root)
+    {
+        return (root == NULL ? -1 : root->_height);
+    }
 
 	node_pointer	minKey() const
 	{

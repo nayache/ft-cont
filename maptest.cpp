@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 12:09:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/17 18:30:02 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/18 18:49:02 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,7 @@ int	main()
 {
 	ft::map<int, std::string> testmap;
 
-/*	testmap._tree._main->setValues(15, "fifteen");
-	testmap._tree.addNode(ft::pair<int, std::string>(10, "ten"));
-	testmap._tree.addNode(ft::pair<int, std::string>(20, "twenty"));
-	testmap._tree.addNode(ft::pair<int, std::string>(16, "seize"));
-	testmap._tree.addNode(ft::pair<int, std::string>(7, "seven"));
-	testmap._tree.addNode(ft::pair<int, std::string>(9, "nine"));
-	testmap._tree.addNode(ft::pair<int, std::string>(8, "eight"));
-	testmap._tree.addNode(ft::pair<int, std::string>(12, "douze"));
-*/	
-	testmap.insert(ft::pair<int, std::string>(44, "text"));
-	testmap.insert(ft::pair<int, std::string>(11, "text"));
+/*	testmap.insert(ft::pair<int, std::string>(44, "text"));
 	testmap.insert(ft::pair<int, std::string>(11, "text"));
 	testmap.insert(ft::pair<int, std::string>(45, "text"));
 	testmap.insert(ft::pair<int, std::string>(-3, "text"));
@@ -50,11 +40,33 @@ int	main()
 	ret = testmap.insert(ft::pair<int, std::string>(46, "zero"));
 	ret = testmap.insert(ft::pair<int, std::string>(47, "zero"));
 	ret = testmap.insert(ft::pair<int, std::string>(50, "zero"));
-	std::cout << ret.first->first << " " << ret.first->second << " " << ret.second << std::endl;
-	ft::map<int, std::string>::iterator itt = testmap.begin();
-	itt = testmap.insert(itt, ft::pair<int, std::string>(-1, "newNode"));
-	std::cout << *itt << std::endl;
-	itt = testmap.begin();
+	ret = testmap.insert(ft::pair<int, std::string>(50, "zero"));*/
+//	std::cout << ret.first->first << " " << ret.first->second << " " << ret.second << std::endl;
+//	ft::map<int, std::string>::iterator itt = testmap.begin();
+//	ft::map<int, std::string>::iterator itt;
+//	itt++;
+//	itt++;
+//	itt++;
+//	itt++;
+//	testmap.insert(ft::pair<int, std::string>(1, "newNode"));
+//	std::cout << *itt << std::endl;
+//	itt = testmap.begin();
+//	testmap.erase(47);
+//	testmap.erase(44);
+	for (int i = 0; i < 500000; i++)
+		testmap.insert(ft::pair<int, std::string>(i, "babar"));
+//	itt = testmap.begin();
+/*	while (itt != testmap.end())
+	{
+		std::cout << *itt << std::endl;
+		itt++;
+	}*/
+//	for (int i = 0; i < 13; i++)
+//	{
+//		testmap.insert(ft::pair<int, std::string>(i, "babar"));
+//	}
+//	for (std::map<int, std::string>::iterator it = testmap.begin(); it != testmap.end(); it++)
+//		std::cout << it->first << std::endl;
 /*	while (itt != testmap.end())
 	{
 		std::cout << *itt << std::endl;
@@ -63,6 +75,6 @@ int	main()
 //	testmap.insert(itt, ft::pair<int, std::string>(-1, "newNode"));
 //	ret = testmap.insert(ft::pair<int, std::string>(-3, "zero"));
 
-	testmap.print();
+//	testmap.print();
 	return 0;
 } 

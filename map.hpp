@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/17 18:31:30 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/18 16:34:04 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ class	map
 		if (newNode != NULL && newNode->_pair.first == val.first)	
 			return (ft::make_pair(iterator(newNode), false));
 		
-		newNode = this->_tree.insertNode(this->_tree._main, this->_tree._main->_parent, &ret, val);
-
+		this->_tree._main = this->_tree.insertNode(this->_tree._main, this->_tree._main->_parent, &ret, val);
+		
 		return (ft::make_pair(iterator(ret), true));
 	}
 
@@ -102,6 +102,16 @@ class	map
 		this->_tree.insertNode(position.getPtr(), (position.getPtr())->_parent, &ret, val);
 
 		return (iterator(ret));
+	}
+	
+	size_type erase (const key_type& k)
+	{
+		if (this->_tree.searchByKey(this->_tree._main, k) == NULL)
+			return (0);
+
+		this->_tree._main = this->_tree.remove(k, this->_tree._main);
+		
+		return (1);
 	}
 
 	iterator				begin() { return (iterator(this->_tree._begin->_right)); }
