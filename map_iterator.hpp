@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 15:22:22 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/17 17:53:21 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/21 19:46:32 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,10 @@ class MapIterator
 		
 		if (this->_ptr->_right == NULL)
 		{
-			if (this->_ptr->_parent != NULL)
-				this->_ptr = this->_ptr->_parent;
+			//if (this->_ptr->_parent != NULL)
+			this->_ptr = this->_ptr->_parent;
 			
-			if (this->_ptr->_pair.first < key)
+			if (this->_ptr != NULL && this->_ptr->_pair.first < key)
 			{
 				while (this->_ptr->_parent != NULL && key > this->_ptr->_parent->_pair.first)
 					this->_ptr = this->_ptr->_parent;

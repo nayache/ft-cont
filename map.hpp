@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/18 16:34:04 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/22 20:33:59 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,23 @@ class	map
 		
 	ft::pair<iterator, bool>	insert(const value_type& val)
 	{
-		node_type*	ret;
+		//node_type*	ret;
 		
 		if (this->_tree._main == NULL)
 		{
 			this->_tree._main = this->_tree.createNode(NULL, val);
+			this->_tree._begin->_right = this->_tree._main;
+			this->_tree._end->_left = this->_tree._main;
 			return (ft::make_pair(iterator(this->_tree._main), true));
 		}
-
 		node_type*	newNode = this->_tree.searchByKey(this->_tree._main, val.first);
 		
 		if (newNode != NULL && newNode->_pair.first == val.first)	
 			return (ft::make_pair(iterator(newNode), false));
 		
-		this->_tree._main = this->_tree.insertNode(this->_tree._main, this->_tree._main->_parent, &ret, val);
+		newNode = this->_tree.insertNode(this->_tree._main, val);
 		
-		return (ft::make_pair(iterator(ret), true));
+		return (ft::make_pair(iterator(newNode), true));
 	}
 
 	iterator	insert(iterator position, const value_type& val)
@@ -108,15 +109,14 @@ class	map
 	{
 		if (this->_tree.searchByKey(this->_tree._main, k) == NULL)
 			return (0);
-
-		this->_tree._main = this->_tree.remove(k, this->_tree._main);
 		
+		this->_tree.remove(k);
 		return (1);
 	}
 
-	iterator				begin() { return (iterator(this->_tree._begin->_right)); }
+	iterator				begin() { return (iterator(this->_tree.minKey())); }
 	const_iterator			begin() const { return (const_iterator(this->_tree._begin->_right)); }
-	iterator				end() { return (iterator(this->_tree._end)); }
+	iterator				end() { return (iterator(this->_tree._end->_left)); }
 	const_iterator			end() const { return (const_iterator(this->_tree._end)); }
 	reverse_iterator		rbegin() { return (reverse_iterator(NULL)); }
 	const_reverse_iterator	rbegin() const { return (const_reverse_iterator(NULL)); }

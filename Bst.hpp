@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/18 19:09:05 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/22 20:32:20 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ class BinarySearchTree
 			this->_alloc.destroy(this->_end);
 			this->_alloc.deallocate(this->_end, 1);
 		}
-		freeTree(this->_main); 
+		if (this->_main != NULL)
+			freeTree(this->_main); 
 	}
 
 	node_pointer	createNode(node_pointer parent, pair_type pair)
@@ -101,88 +102,258 @@ class BinarySearchTree
 		node_pointer newNode = this->_alloc.allocate(1);
 		this->_alloc.construct(newNode, node_type(pair));
 		
-		if (parent == NULL)
-		{
-			this->_begin->_right = newNode;
-			this->_end->_left = newNode;
-		}
-		else if (newNode->_pair.first < this->_begin->_right->_pair.first)
-			this->_begin->_right = newNode;
-		else if (newNode->_pair.first > this->_end->_left->_pair.first)
-			this->_end->_left = newNode;
-
 		newNode->_height = 0;
 		newNode->_parent = parent;
-
+		
 		return (newNode);
 	}
 	
-	node_pointer	insertNode(node_pointer root, node_pointer parent, node_pointer* ret, const pair_type& pair)
+	void	removeNode(node_pointer parent, node_pointer curr, key_type key)
 	{
-		if (root == NULL)
-			return ((*ret = createNode(parent, pair)));
-        
-		else if (pair.first < root->_pair.first)
+		if (curr == NULL)
+			return;
+
+		if (curr->_pair.first == key)
 		{
-			parent = root;
-			root->_left = insertNode(root->_left, parent, ret, pair);
+			if (curr->_left == NULL && curr->_right == NULL)
+			{
+				if (parent != NULL && parent->_pair.first == curr->_pair.first)
+				{
+					this->_alloc.destroy(this->_main);
+					this->_alloc.deallocate(this->_main, 1);
+					this->_main = NULL;
+					return;
+				}
+				else if (parent->_right == curr)
+					parent->_right = NULL;
+				else
+					parent->_left = NULL;
+				this->_alloc.destroy(curr);
+				this->_alloc.deallocate(curr, 1);
+				rebalancer(parent);
+			}
+			else if (curr->_left != NULL && curr->_right == NULL)
+			{
+				pair_type tmp = curr->_pair;
+				curr->_pair = curr->_left->_pair;
+				curr->_left->_pair = tmp;
+				removeNode(curr, curr->_left, key);
+			}
+			else if (curr->_left == NULL && curr->_right != NULL)
+			{
+				pair_type tmp = curr->_pair;
+				curr->_pair = curr->_right->_pair;
+				curr->_right->_pair = tmp;
+				removeNode(curr, curr->_right, key);
+			}
+			else
+			{
+				node_pointer tmp = curr->_right;
+				int flag = 0;
 
-            if (height(root->_left) - height(root->_right) == 2)
-            {
-                if (pair.first < root->_left->_pair.first)
-                    root = singleRightRotate(root);
-                else
-                    root = doubleRightRotate(root);
-            }
-        }
-        else if (pair.first > root->_pair.first)
-        {
-			parent = root;
-            root->_right = insertNode(root->_right, parent, ret, pair);
-
-            if (height(root->_right) - height(root->_left) == 2)
-            {
-                if (pair.first > root->_right->_pair.first)
-                    root = singleLeftRotate(root);
-                else
-                    root = doubleLeftRotate(root);
+				while (tmp->_left)
+				{
+					flag = 1;
+					parent = tmp;
+					tmp = tmp->_left;
+				}
+				if (!flag)
+					parent = curr;
+				
+				pair_type tmpPair = curr->_pair;
+				curr->_pair = tmp->_pair;
+				tmp->_pair = tmpPair;
+				removeNode(parent, tmp, tmp->_pair.first);
 			}
 		}
-		root->_height = std::max(height(root->_left), height(root->_right)) + 1;
-		return (root);
 	}
-    
-	node_pointer	singleRightRotate(node_pointer &root)
-    {
-        node_pointer tmp = root->_left;
-        root->_left = tmp->_right;
-        tmp->_right = root;
-        root->_height = std::max(height(root->_left), height(root->_right)) + 1;
-        tmp->_height = std::max(height(tmp->_left), root->_height) + 1;
-        return (tmp);
-    }
+	
+	void	remove(key_type key)
+	{
+		node_pointer	tmp = this->_main;
+		node_pointer	parent = tmp;
+		bool			flag = false;
 
-    node_pointer singleLeftRotate(node_pointer &root)
-    {
-        node_pointer tmp = root->_right;
-        root->_right = tmp->_left;
-        tmp->_left = root;
-        root->_height = std::max(height(root->_left), height(root->_right)) + 1;
-        tmp->_height = std::max(height(root->_right), root->_height) + 1 ;
-        return (tmp);
-    }
+		if (tmp == NULL)
+			removeNode(NULL, NULL, key);
 
-    node_pointer doubleLeftRotate(node_pointer &root)
-    {
-        root->_right = singleRightRotate(root->_right);
-        return (singleLeftRotate(root));
-    }
+		while (tmp)
+		{
+			if (key == tmp->_pair.first)
+			{
+				flag = true;
+				removeNode(parent, tmp, key);
+				break;
+			}
+			else
+			{
+				parent = tmp;
+				if (key < tmp->_pair.first)
+					tmp = tmp->_left;
+				else
+					tmp = tmp->_right;
+			}
+		}
+	}
 
-    node_pointer doubleRightRotate(node_pointer &root)
-    {
-        root->_left = singleLeftRotate(root->_left);
-        return (singleRightRotate(root));
-    }
+	node_pointer	insertNode(node_pointer root, pair_type pair)
+	{
+		node_pointer linker = root;
+		node_pointer newNode = createNode(NULL, pair);
+		
+		while (linker != NULL)
+		{
+			if (linker->_pair.first > pair.first)
+			{
+				if (linker->_left == NULL)
+				{
+					linker->_left = newNode;
+					newNode->_parent = linker;
+					break;
+				}
+				else
+					linker = linker->_left;
+			}
+			else
+			{
+				if (linker->_right == NULL)
+				{
+					linker->_right = newNode;
+					newNode->_parent = linker;
+					break;
+				}
+				else
+					linker = linker->_right;
+			}
+		}
+		rebalancer(newNode);
+		return (newNode);
+	}
+	
+	int	getHeight(node_pointer tmp) { return ((tmp == NULL) ? -1 : tmp->_height); }
+
+	int balanceFactor(node_pointer tmp)
+	{
+		return (getHeight(tmp->_right) - getHeight(tmp->_left));
+	}
+
+	void heightBalance(node_pointer tmp)
+	{
+		int l = -1;
+		int r = -1;
+		
+		if (tmp->_left)
+			l = tmp->_left->_height;
+		if (tmp->_right)
+			r = tmp->_right->_height;
+		tmp->_height = std::max(l, r) + 1;
+	}
+	
+	void treeFix(node_pointer tmp)
+	{
+		if (balanceFactor(tmp) == 2)
+		{
+			if (balanceFactor(tmp->_right) < 0)
+				rightRotate(tmp->_right);
+			leftRotate(tmp);
+			heightBalance(tmp);
+		}
+		else if (balanceFactor(tmp) == -2)
+		{
+			if (balanceFactor(tmp->_left) > 0)
+				leftRotate(tmp->_left);
+			rightRotate(tmp);
+			heightBalance(tmp);
+		}
+	}
+	
+	void rebalancer(node_pointer tmp)
+	{
+		if (tmp->_pair.first < this->_begin->_right->_pair.first)
+			this->_begin->_right = tmp;
+		else if (tmp->_pair.first > this->_end->_left->_pair.first)
+			this->_end->_left = tmp;
+		
+		if (tmp == this->_main)
+			treeFix(this->_main);
+		else 
+		{
+			while  (tmp != NULL)
+			{
+				heightBalance(tmp);
+				tmp = tmp->_parent;
+				if (tmp)
+					treeFix(tmp);
+			}
+		}
+	}
+	
+	void	leftRotate(node_pointer x)
+	{
+		node_pointer newNode = createNode(NULL, x->_pair);
+		node_pointer tmp = x->_right;
+		
+		if (x->_right->_left)
+			newNode->_right = x->_right->_left;
+		newNode->_left = x->_left;
+		x->_pair = x->_right->_pair;
+
+		x->_left = newNode;
+		if (newNode->_left)
+			newNode->_left->_parent = newNode;
+		if (newNode->_right)
+			newNode->_right->_parent = newNode;
+		newNode->_parent = x;
+
+		if (x->_right->_right)
+			x->_right = x->_right->_right;
+		else
+			x->_right = NULL;
+
+		if (x->_right)
+			x->_right->_parent = x;
+
+		heightBalance(x->_left);
+		if (x->_right)
+			heightBalance(x->_right);
+		heightBalance(x);
+		
+		this->_alloc.destroy(tmp);
+		this->_alloc.deallocate(tmp, 1);
+	}
+
+	void	rightRotate(node_pointer x)
+	{
+		node_pointer newNode = createNode(NULL, x->_pair);
+		node_pointer tmp = x->_left;
+		
+		if (x->_left->_right)
+			newNode->_left = x->_left->_right;
+		newNode->_right = x->_right;
+		x->_pair = x->_left->_pair;
+
+		x->_right = newNode;
+		if (newNode->_left)
+			newNode->_left->_parent = newNode;
+		if (newNode->_right)
+			newNode->_right->_parent = newNode;
+		newNode->_parent = x;
+
+		if (x->_left->_left)
+			x->_left = x->_left->_left;
+		else
+			x->_left = NULL;
+
+		if (x->_left)
+			x->_left->_parent = x;
+
+		heightBalance(x->_right);
+		if (x->_left)
+			heightBalance(x->_left);
+		heightBalance(x);
+		
+		delete (tmp);
+	}
 
 	node_pointer findMin(node_pointer root)
     {
@@ -203,76 +374,6 @@ class BinarySearchTree
         else
             return (findMax(root->_right));
     }
-
-    node_pointer remove(key_type key, node_pointer root)
-    {
-        if (root == NULL)
-            return NULL;
-
-        if (key < root->_pair.first)
-            root->_left = remove(key, root->_left);
-        else if (key > root->_pair.first)
-            root->_right = remove(key, root->_right);
-
-        else
-		{
-			if (root->_right && root->_left)
-			{
-				node_pointer tmp = findMin(root->_right);
-				root->_pair.first = tmp->_pair.first;
-				root->_right = remove(root->_pair.first, root->_right);
-			}
-			else
-			{
-				node_pointer tmp = root->_left ? root->_left : root->_right;
-				if (tmp == NULL)
-				{
-					tmp = root;
-					root = NULL;
-				}
-				else
-					root->copy(*tmp);
-				this->_alloc.destroy(tmp);
-				this->_alloc.deallocate(tmp, 1);
-			}
-		}
-        if (root == NULL)
-            return root;
-
-        root->_height = std::max(height(root->_left), height(root->_right)) + 1;
-		int	balance = getBalance(root);
-		
-		if (balance > 1 && getBalance(root->_left) >= 0)
-			return singleRightRotate(root);
-    	
-		if (balance < -1 &&  getBalance(root->_right) <= 0)
-			return singleLeftRotate(root);
-    	
-		if (balance > 1 &&  getBalance(root->_left) < 0)
-		{
-			root->_left = singleLeftRotate(root->_left);
-			return singleRightRotate(root);
-		}
-
-		if (balance < -1 && getBalance(root->_right) > 0)
-		{
-			root->_right = singleRightRotate(root->_right);
-			return singleLeftRotate(root);
-		}
-		return (root);
-	}
-
-	int getBalance(node_pointer root)  
-	{  
-		if (root == NULL)
-			return (0);
-		return (height(root->_left) - height(root->_right));
-	}
-
-	int height(node_pointer root)
-	{
-		return (root == NULL ? -1 : root->_height);
-	}
 
 	node_pointer	minKey() const
 	{
