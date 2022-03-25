@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 15:22:22 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/21 19:46:32 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/25 00:39:13 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ class MapIterator
 	}
 
 	node_pointer	getPtr() const { return (this->_ptr); }
+	node_pointer	getBegin() const { return (this->_begin); }
+	node_pointer	getEnd() const { return (this->_end); }
 
 	//-----attributes--------
 
@@ -95,11 +97,16 @@ class MapIterator
 
 	void	next() // a corriger si pas de prev ou next => what behavior ?
 	{
+		if (this->_ptr == NULL)
+		{
+			std::cout << "no iterate iterator\n";
+			return;
+		}
+		
 		key_type key = this->_ptr->_pair.first;
 		
 		if (this->_ptr->_right == NULL)
 		{
-			//if (this->_ptr->_parent != NULL)
 			this->_ptr = this->_ptr->_parent;
 			
 			if (this->_ptr != NULL && this->_ptr->_pair.first < key)
@@ -107,8 +114,6 @@ class MapIterator
 				while (this->_ptr->_parent != NULL && key > this->_ptr->_parent->_pair.first)
 					this->_ptr = this->_ptr->_parent;
 				
-		//		if (this->_ptr->_parent == NULL)
-		//			this->_ptr = this->_end;
 				this->_ptr = this->_ptr->_parent;
 			}
 		}
@@ -122,15 +127,15 @@ class MapIterator
 
 	void	prev()
 	{
-		key_type key = this->_ptr->_pair.first;
+		if (this->_ptr == NULL)
+			return;
 		
+		key_type key = this->_ptr->_pair.first;
+	
 		if (this->_ptr->_left == NULL)
 		{
 			while (this->_ptr != NULL && this->_ptr->_pair.first >= key)
 				this->_ptr = this->_ptr->_parent;
-			
-		//	if (this->_ptr == NULL)
-		//		this->_ptr = this->_end;
 		}
 		else
 		{

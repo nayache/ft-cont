@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/22 20:32:20 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/25 17:47:05 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,25 +74,10 @@ class BinarySearchTree
 
 	
 	BinarySearchTree(const alloc_type alloc = alloc_type()) : _alloc(alloc), _main(NULL)
-	{
-		this->_begin = this->_alloc.allocate(1);
-		this->_alloc.construct(this->_begin, node_type());
-		this->_end = this->_alloc.allocate(1);
-		this->_alloc.construct(this->_end, node_type());
-	}
+	{}
 
 	~BinarySearchTree()
 	{
-		if (this->_begin != NULL)
-		{
-			this->_alloc.destroy(this->_begin);
-			this->_alloc.deallocate(this->_begin, 1);
-		}
-		if (this->_end != NULL)
-		{
-			this->_alloc.destroy(this->_end);
-			this->_alloc.deallocate(this->_end, 1);
-		}
 		if (this->_main != NULL)
 			freeTree(this->_main); 
 	}
@@ -195,6 +180,19 @@ class BinarySearchTree
 			}
 		}
 	}
+	
+	node_pointer	treeSearch(node_pointer root, key_type key)
+	{
+		if (root == NULL)
+			return (NULL);
+		
+		if (root->_pair.first == key)
+			return (root);
+		else if	(root->_parent && root->_parent->_pair.first == key)
+			return (root->_parent);
+		
+		return (NULL);
+	}
 
 	node_pointer	insertNode(node_pointer root, pair_type pair)
 	{
@@ -227,7 +225,8 @@ class BinarySearchTree
 			}
 		}
 		rebalancer(newNode);
-		return (newNode);
+		
+		return (searchByKey(this->_main, pair.first));
 	}
 	
 	int	getHeight(node_pointer tmp) { return ((tmp == NULL) ? -1 : tmp->_height); }
@@ -269,11 +268,6 @@ class BinarySearchTree
 	
 	void rebalancer(node_pointer tmp)
 	{
-		if (tmp->_pair.first < this->_begin->_right->_pair.first)
-			this->_begin->_right = tmp;
-		else if (tmp->_pair.first > this->_end->_left->_pair.first)
-			this->_end->_left = tmp;
-		
 		if (tmp == this->_main)
 			treeFix(this->_main);
 		else 
@@ -292,8 +286,8 @@ class BinarySearchTree
 	{
 		node_pointer newNode = createNode(NULL, x->_pair);
 		node_pointer tmp = x->_right;
-		
-		if (x->_right->_left)
+
+		if (x->_right && x->_right->_left)
 			newNode->_right = x->_right->_left;
 		newNode->_left = x->_left;
 		x->_pair = x->_right->_pair;
@@ -327,7 +321,7 @@ class BinarySearchTree
 		node_pointer newNode = createNode(NULL, x->_pair);
 		node_pointer tmp = x->_left;
 		
-		if (x->_left->_right)
+		if (x->_left && x->_left->_right)
 			newNode->_left = x->_left->_right;
 		newNode->_right = x->_right;
 		x->_pair = x->_left->_pair;
@@ -351,36 +345,26 @@ class BinarySearchTree
 		if (x->_left)
 			heightBalance(x->_left);
 		heightBalance(x);
-		
-		delete (tmp);
+	
+		this->_alloc.destroy(tmp);
+		this->_alloc.deallocate(tmp, 1);
 	}
 
-	node_pointer findMin(node_pointer root)
-    {
-        if (root == NULL)
-            return NULL;
-        else if (root->_left == NULL)
-            return (root);
-        else
-            return (findMin(root->_left));
-    }
-
-    node_pointer findMax(node_pointer root)
-    {
-        if (root == NULL)
-            return NULL;
-        else if (root->_right == NULL)
-            return (root);
-        else
-            return (findMax(root->_right));
-    }
-
-	node_pointer	minKey() const
+	node_pointer	findMin() const
 	{
 		node_pointer tmp = this->_main;
 
 		while (tmp->_left != NULL)
 			tmp = tmp->_left;
+		return (tmp);
+	}
+	
+	node_pointer	findMax() const
+	{
+		node_pointer tmp = this->_main;
+
+		while (tmp->_right != NULL)
+			tmp = tmp->_right;
 		return (tmp);
 	}
 
@@ -389,8 +373,6 @@ class BinarySearchTree
 	
 	alloc_type				_alloc;
 	node_pointer			_main;
-	node_pointer			_begin;
-	node_pointer			_end;
 	
 	//---------------------------------
 
@@ -404,13 +386,26 @@ class BinarySearchTree
 		
 		if (Bst->_left != NULL)
 			freeTree(Bst->_left);
-		
+	
 		this->_alloc.destroy(Bst);
 		this->_alloc.deallocate(Bst, 1);
 	}
 	
+	void	treeSize(node_pointer root, std::size_t* size) const
+	{
+		if (root == NULL)
+			return;
 
-	node_pointer	searchByKey(node_pointer Bst, key_type key)
+		*size += 1;
+
+		if (root->_right != NULL)
+			treeSize(root->_right, size);
+		
+		if (root->_left != NULL)
+			treeSize(root->_left, size);
+	}
+
+	node_pointer	searchByKey(node_pointer Bst, key_type key) const
 	{
 		if (key == Bst->_pair.first)
 			return (Bst);
@@ -429,6 +424,28 @@ class BinarySearchTree
 			else
 				return searchByKey(Bst->_right, key);
 		}
+	}
+	
+	void printNode(node_pointer x)
+	{
+		std::cout << "\033[1;28m" << x << "\033[0;28m";
+		std::cout << " data : " << x->_pair;
+		std::cout << " parent : ";
+		if (x != NULL && x->_parent != NULL)
+			std::cout << x->_parent->_pair;
+		else
+			std::cout << "\033[1;36mnil\033[0;28m ";
+		std::cout << " left : ";
+		if (x != NULL && x->_left != NULL)
+			std::cout << x->_left->_pair;
+		else
+			std::cout << "\033[1;36mnil\033[0;28m ";
+		std::cout << " right : ";
+		if (x != NULL && x->_right != NULL)
+			std::cout << x->_right->_pair;
+		else
+			std::cout << "\033[1;36mnil\033[0;28m ";
+		std::cout << std::endl;
 	}
 };
 
