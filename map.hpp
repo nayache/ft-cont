@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/25 17:53:17 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/30 18:00:35 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,16 +159,11 @@ class	map
 			while (tmp->first < b)
 				tmp++;
 			
-			std::cout << "-> "	<< tmp->first << " <-\n";
 			this->erase(tmp);
 			tmp = this->begin();
 		}
 		if (tmp->first == e)
-		{
-			std::cout << "-> "	<< tmp->first << " <-\n";
 			this->erase(tmp);
-		}
-		
 	}
 	
 	void	clear()
@@ -223,7 +218,45 @@ class	map
 		return (1);
 	}
 
-//	iterator	lower_bound(const key_type& k)
+	iterator	lower_bound(const key_type& k)
+	{
+		iterator it	= this->begin();
+
+		while (it != this->end() && this->_comp(it->first, k))
+			it++;
+		
+		return (it);
+	}
+	
+	const_iterator	lower_bound(const key_type& k) const
+	{
+		const_iterator it = this->begin();
+
+		while (it != this->end() && this->_comp(it->first, k))
+			it++;
+
+		return (it);
+	}
+
+	iterator	upper_bound(const key_type&	k)
+	{
+		iterator it = this->begin();
+
+		while (it != this->end() && !this->_comp(k, it->first))
+			it++;
+		
+		return (it);
+	}
+
+	const_iterator	upper_bound(const key_type&	k) const
+	{
+		const_iterator it = this->begin();
+
+		while (it != this->end() && !this->_comp(k, it->first))
+			it++;
+
+		return (it);
+	}
 
 //-------------------------------CAPACITY-------------------------------------/
 	
@@ -280,12 +313,14 @@ class	map
 	{
     	print2(this->_tree._main, 0);
 	}
-
+//---------------------------------------
 	public:
 
 	alloc_type		_alloc;
 	key_compare		_comp;
 	tree_type		_tree;
+
+	//-------------------------
 };
 
 }

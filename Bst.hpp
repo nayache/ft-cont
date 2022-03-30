@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/25 17:47:05 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/29 18:57:11 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,6 +353,9 @@ class BinarySearchTree
 	node_pointer	findMin() const
 	{
 		node_pointer tmp = this->_main;
+		
+		if (tmp == NULL)
+			return (tmp);
 
 		while (tmp->_left != NULL)
 			tmp = tmp->_left;
@@ -363,6 +366,9 @@ class BinarySearchTree
 	{
 		node_pointer tmp = this->_main;
 
+		if (tmp == NULL)
+			return (tmp);
+		
 		while (tmp->_right != NULL)
 			tmp = tmp->_right;
 		return (tmp);

@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 12:09:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/25 17:49:44 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/30 18:01:03 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 int	main()
 {
 	ft::map<int, std::string> testmap;
+	
+//	std::cout << (testmap.begin())->first << std::endl;
 
 	testmap.insert(ft::pair<int, std::string>(5, "text"));
 	testmap.insert(ft::pair<int, std::string>(0, "text"));
@@ -161,8 +163,11 @@ int	main()
 //	ret = testmap.insert(ft::pair<int, std::string>(-3, "zero"));
 
 	//testmap.print();
+	ft::map<int, std::string>::const_iterator cit;
+	cit = testmap.upper_bound(-4);
+	std::cout << cit->second << std::endl;
 	testmap.clear();
-	testmap.count(3);
+	//testmap.count(-4);
 	std::cout << "====SIZE=====> " << testmap.size() << "=====EMPTY===>" << testmap.empty() << std::endl;
 	std::cout << "====SIZE=====> " << testmap.size() << "=====EMPTY===>" << testmap.empty() << std::endl;
 //	copy.print();

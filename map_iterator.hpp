@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 15:22:22 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/25 00:39:13 by nayache          ###   ########.fr       */
+/*   Updated: 2022/03/30 17:59:40 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class MapIterator
 
 	typedef Node												node_type;
 	typedef Node*												node_pointer;
+	typedef	BinarySearchTree<Key, Mapped>						tree_type;
 	typedef	Key													key_type;
 	typedef Mapped												mapped_type;
 	typedef typename ft::pair<Key, Mapped>						value_type;
@@ -84,8 +85,6 @@ class MapIterator
 	}
 
 	node_pointer	getPtr() const { return (this->_ptr); }
-	node_pointer	getBegin() const { return (this->_begin); }
-	node_pointer	getEnd() const { return (this->_end); }
 
 	//-----attributes--------
 
@@ -104,7 +103,7 @@ class MapIterator
 		}
 		
 		key_type key = this->_ptr->_pair.first;
-		
+			
 		if (this->_ptr->_right == NULL)
 		{
 			this->_ptr = this->_ptr->_parent;
