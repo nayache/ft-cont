@@ -6,18 +6,18 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/30 18:00:35 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 13:35:12 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 # define MAP_HPP
 
-# include "Bst.hpp"
-# include "map_iterator.hpp"
-# include "includes/is_integral.hpp"
-# include "includes/enable_if.hpp"
-# include "includes/utils.hpp"
+# include "../Bst.hpp"
+# include "../iterators/map_iterator.hpp"
+# include "../is_integral.hpp"
+# include "../enable_if.hpp"
+# include "../utils.hpp"
 # include <unistd.h>
 
 namespace ft {
@@ -59,7 +59,7 @@ class	map
 
 	map (const map& x) : _alloc(x._alloc), _comp(x._comp), _tree(tree_type())
 	{
-		this->insert(x.begin(), x.end());
+		*this = x;
 	}
 	
 	~map()
@@ -83,19 +83,19 @@ class	map
 
 	ft::pair<iterator, bool>	insert(const value_type& val)
 	{
-		if (this->_tree._main == NULL)
+		if (this->_tree._root == NULL)
 		{
-			this->_tree._main = this->_tree.createNode(NULL, val);
-			return (ft::make_pair(iterator(this->_tree._main), true));
+			this->_tree._root = this->_tree.createNode(NULL, val);
+			return (ft::make_pair(iterator(this->_tree._root, &(this->_tree)), true));
 		}
-		node_type*	newNode = this->_tree.searchByKey(this->_tree._main, val.first);
+		node_type*	newNode = this->_tree.searchByKey(this->_tree._root, val.first);
 		
 		if (newNode != NULL)	
-			return (ft::make_pair(iterator(newNode), false));
+			return (ft::make_pair(iterator(newNode, &(this->_tree)), false));
 		
-		newNode = this->_tree.insertNode(this->_tree._main, val);
+		newNode = this->_tree.insertNode(this->_tree._root, val);
 		
-		return (ft::make_pair(iterator(newNode), true));
+		return (ft::make_pair(iterator(newNode, &(this->_tree)), true));
 	}
 
 	iterator	insert(iterator position, const value_type& val)
@@ -119,7 +119,7 @@ class	map
 		if (position.getPtr() != NULL)	
 			ret = this->_tree.insertNode(position.getPtr(), val);
 		else
-			ret = this->_tree.insertNode(this->_tree._main, val);
+			ret = this->_tree.insertNode(this->_tree._root, val);
 			
 		return (iterator(ret));
 	}
@@ -139,7 +139,7 @@ class	map
 
 	size_type erase (const key_type& k)
 	{
-		if (this->find(k) == NULL)
+		if (this->find(k) == this->end())
 			return (0);
 		
 		this->_tree.remove(k);
@@ -149,6 +149,9 @@ class	map
 	
 	void	erase(iterator first, iterator last)
 	{
+		if (first == last)
+			return;
+
 		key_type b = first->first;
 		key_type e = (--last)->first;
 		
@@ -166,54 +169,61 @@ class	map
 			this->erase(tmp);
 	}
 	
+	void	swap(map& x)
+	{
+		this->_tree.swap(x._tree);
+		ft::swap(this->_comp, x._comp);
+		ft::swap(this->_alloc, x._alloc);
+	}
+
 	void	clear()
 	{
 		this->erase(this->begin(), this->end());
-		this->_tree._main = NULL;
+		this->_tree._root = NULL;
 	}
 
 //----------------------------ITERATORS---------------------------------------//
 
-	iterator				begin() { return (iterator(this->_tree.findMin())); }
-	const_iterator			begin() const { return (const_iterator(this->_tree.findMin())); }
-	iterator				end() { return (iterator(this->_tree.findMax())); }
-	const_iterator			end() const { return const_iterator(this->_tree.findMax()); }
-	reverse_iterator		rbegin() { return (reverse_iterator(this->end())); }
+	iterator				begin() { return (iterator(this->_tree.findMin(), &(this->_tree))); }
+	const_iterator			begin() const { return (const_iterator(this->_tree.findMin(), &(this->_tree))); }
+	iterator				end() { return (iterator(this->_tree._end, &(this->_tree))); }
+	const_iterator			end() const { return (const_iterator(this->_tree._end, &(this->_tree))); }
+	reverse_iterator		rbegin() { return (reverse_iterator(this->_tree.findMax(), &(this->_tree))); }
 	const_reverse_iterator	rbegin() const { return (const_reverse_iterator(this->rbegin())); }
-	reverse_iterator		rend() { return (reverse_iterator(this->_tree.findMin())); }
+	reverse_iterator		rend() { return (reverse_iterator(this->_tree._end, &(this->_tree))); }
 	const_reverse_iterator	rend() const { return (const_reverse_iterator(this->rend())); }
 
 //---------------------------OPERATIONS--------------------------------------/
 
 	iterator	find(const key_type& k)
 	{
-		if (this->_tree._main == NULL)
-			return (NULL);
+		if (this->_tree._root == NULL)
+			return (this->end());
 		
-		node_type*	finder = this->_tree.searchByKey(this->_tree._main, k);
+		node_type*	finder = this->_tree.searchByKey(this->_tree._root, k);
 
 		if (finder == NULL)
 			return (this->end());
 
-		return (iterator(finder));
+		return (iterator(finder, &(this->_tree)));
 	}
 
 	const_iterator	find(const key_type& k) const
 	{
-		if (this->_tree._main == NULL)
-			return (NULL);
+		if (this->_tree._root == NULL)
+			return (this->end());
 
-		node_type*	finder = this->_tree.searchByKey(this->_tree._main, k);
+		node_type*	finder = this->_tree.searchByKey(this->_tree._root, k);
 
 		if (finder == NULL)
 			return (this->end());
 
-		return (const_iterator(finder));
+		return (const_iterator(finder, &(this->_tree)));
 	}
 
 	size_type	count(const key_type& k) const
 	{
-		if (this->_tree._main == NULL || this->_tree.searchByKey(this->_tree._main, k) == NULL)
+		if (this->_tree._root == NULL || this->_tree.searchByKey(this->_tree._root, k) == NULL)
 			return (0);
 		return (1);
 	}
@@ -258,15 +268,27 @@ class	map
 		return (it);
 	}
 
+	ft::pair<iterator, iterator> equal_range (const key_type& k)
+	{
+		return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+	}
+	
+	ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const
+	{
+		return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+	}
+
 //-------------------------------CAPACITY-------------------------------------/
 	
 	size_type	size()	const
 	{
 		size_type size = 0;
-		this->_tree.treeSize(this->_tree._main, &size);
+		this->_tree.treeSize(this->_tree._root, &size);
 		
 		return (size);
 	}
+
+	size_type	max_size() const { return (this->_alloc.max_size()); }
 
 	bool	empty() const { return (this->size() == 0 ? 1 : 0); }
 
@@ -274,7 +296,7 @@ class	map
 
 	mapped_type&	operator[](const key_type& k)
 	{
-		if (this->_tree._main == NULL)
+		if (this->_tree._root == NULL)
 			this->insert(ft::make_pair(k, mapped_type()));
 		
 		iterator	ret = this->find(k);
@@ -311,10 +333,10 @@ class	map
  
 	void print()
 	{
-    	print2(this->_tree._main, 0);
+    	print2(this->_tree._root, 0);
 	}
 //---------------------------------------
-	public:
+	private:
 
 	alloc_type		_alloc;
 	key_compare		_comp;

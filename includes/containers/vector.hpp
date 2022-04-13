@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 15:48:18 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 11:15:21 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ class	vector
 		typedef	const T*										const_pointer;
 		typedef	size_t											size_type;
 		typedef typename std::ptrdiff_t							difference_type;
-		typedef typename ft::VecIterator<value_type>			iterator;		
-		typedef typename ft::VecIterator<const value_type>		const_iterator;		
+		typedef typename ft::VecIterator<value_type, false>		iterator;		
+		typedef typename ft::VecIterator<value_type, true>		const_iterator;		
 		typedef typename ft::ReverseIterator<iterator>			reverse_iterator;		
 		typedef typename ft::ReverseIterator<const_iterator>	const_reverse_iterator;
 	
@@ -315,6 +315,8 @@ class	vector
 		iterator		end() { return (this->begin() + this->_size); }
 		const_iterator	end() const { return (this->begin() + this->_size); }
 		reverse_iterator	rend() { return (reverse_iterator(this->begin() - 1)); }
+		const_reverse_iterator	rbegin() const { return (const_reverse_iterator(this->end() - 1)); }
+		const_reverse_iterator	rend() const { return (const_reverse_iterator(this->_begin() - 1)); }
 		
 		/// CAPACITY
 		

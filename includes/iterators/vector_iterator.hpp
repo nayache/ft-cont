@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 10:00:41 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/17 18:24:19 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 12:13:53 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,24 @@
 # define VECTOR_ITERATOR_HPP
 
 #include "iterator_traits.hpp"
+#include "../utils.hpp"
 
 namespace ft {
-template <typename T>
+template <typename T, bool B>
 class	VecIterator
 {
 	public:
 	
 	typedef typename std::random_access_iterator_tag			tag;
 	typedef typename ft::Iterator<tag, T>::iterator_category	iterator_category;
-	typedef typename ft::Iterator<tag, T>::reference	 		reference;
-	typedef typename ft::Iterator<tag, T>::value_type 			value_type;
-	typedef typename ft::Iterator<tag, T>::pointer				pointer;
 	typedef typename ft::Iterator<tag, T>::difference_type		difference_type;
+	typedef typename TrueType<B, T, const T>::type				value_type;
+	typedef typename TrueType<B, T&, const T&>::type			reference;
+	typedef typename TrueType<B, T*, const T*>::type			pointer;
 
 	VecIterator() :	_p(0) {}; 
 	VecIterator(pointer addr) : _p(addr) {}; 
-	VecIterator(const VecIterator<T>& src) : _p(src._p) {};
+	VecIterator(const VecIterator<T, false>& src) { this->_p = src.getPointer(); }
 
 	VecIterator&	operator=(const VecIterator& src)
 	{
@@ -114,6 +115,8 @@ class	VecIterator
 		return (this->_p > rhs._p);
 	}
 	
+	pointer	getPointer() const { return (this->_p); }
+
 	private:
 	
 	pointer	_p;

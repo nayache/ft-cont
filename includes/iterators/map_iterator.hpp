@@ -6,16 +6,16 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 15:22:22 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/30 17:59:40 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 13:35:58 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_ITERATOR_HPP
 # define MAP_ITERATOR_HPP
 
-# include "Bst.hpp"
-# include "includes/iterators/iterator.hpp"
-# include "includes/utils.hpp"
+# include "../Bst.hpp"
+# include "iterator.hpp"
+# include "../utils.hpp"
 
 namespace ft {
 template <class Key, class Mapped, bool B, class Node = Node<Key, Mapped> >
@@ -23,25 +23,26 @@ class MapIterator
 {
 	public:
 
-	typedef Node												node_type;
-	typedef Node*												node_pointer;
-	typedef	BinarySearchTree<Key, Mapped>						tree_type;
+	typedef typename ft::pair<Key, Mapped>						value_type;
 	typedef	Key													key_type;
 	typedef Mapped												mapped_type;
-	typedef typename ft::pair<Key, Mapped>						value_type;
 	typedef std::size_t											size_type;
 	typedef std::ptrdiff_t										difference_type;
+	typedef typename TrueType<B, Node, const Node>::type		node_type;
+	typedef typename TrueType<B, Node*, const Node*>::type		node_pointer;
 	typedef typename TrueType<B, value_type&, const value_type&>::type	reference;
 	typedef typename TrueType<B, value_type*, const value_type*>::type	pointer;
+	typedef typename TrueType<B, BinarySearchTree<Key, Mapped>, const BinarySearchTree<Key, Mapped> >::type		tree_type;
 
 	MapIterator() : _ptr(NULL) {};
-	MapIterator(node_pointer addr) : _ptr(addr) {};
-	MapIterator(const MapIterator<Key, Mapped, false, Node>& src) : _ptr(src.getPtr()) {};
+	MapIterator(node_pointer addr, tree_type* main) : _ptr(addr), _main(main) {};
+	MapIterator(const MapIterator<Key, Mapped, false, Node>& src) : _ptr(src.getPtr()), _main(src.getMain()) {};
 	~MapIterator() {};
 
 	MapIterator&	operator=(const MapIterator& src)
 	{
 		this->_ptr = src.getPtr();
+		this->_main = src.getMain();
 		return (*this);
 	}
 	
@@ -85,12 +86,14 @@ class MapIterator
 	}
 
 	node_pointer	getPtr() const { return (this->_ptr); }
+	tree_type*	getMain() const { return (this->_main); }
 
 	//-----attributes--------
 
 	private:
 
 	node_pointer	_ptr;
+	tree_type*		_main;
 	
 	//----------------------
 
@@ -102,8 +105,11 @@ class MapIterator
 			return;
 		}
 		
+		if (this->_ptr == this->_main->_end)
+			return;
+
 		key_type key = this->_ptr->_pair.first;
-			
+		
 		if (this->_ptr->_right == NULL)
 		{
 			this->_ptr = this->_ptr->_parent;
@@ -115,6 +121,8 @@ class MapIterator
 				
 				this->_ptr = this->_ptr->_parent;
 			}
+			if (this->_ptr == NULL)
+				this->_ptr = this->_main->_end;
 		}
 		else
 		{
@@ -128,6 +136,12 @@ class MapIterator
 	{
 		if (this->_ptr == NULL)
 			return;
+		
+		if (this->_ptr == this->_main->_end)
+		{
+			this->_ptr = this->_main->findMax();
+			return;	
+		}
 		
 		key_type key = this->_ptr->_pair.first;
 	
@@ -157,25 +171,27 @@ class RevMapIterator
 {
 	public:
 
-	typedef Node												node_type;
-	typedef Node*												node_pointer;
 	typedef	Key													key_type;
 	typedef Mapped												mapped_type;
 	typedef typename ft::pair<Key, Mapped>						value_type;
 	typedef std::size_t											size_type;
 	typedef std::ptrdiff_t										difference_type;
+	typedef typename TrueType<B, Node, const Node>::type		node_type;
+	typedef typename TrueType<B, Node*, const Node*>::type		node_pointer;
 	typedef typename TrueType<B, value_type&, const value_type&>::type	reference;
 	typedef typename TrueType<B, value_type*, const value_type*>::type	pointer;
+	typedef typename TrueType<B, BinarySearchTree<Key, Mapped>, const BinarySearchTree<Key, Mapped> >::type		tree_type;
 
 	RevMapIterator() : _ptr(NULL) {};
-	RevMapIterator(node_pointer addr) : _ptr(addr) {};
-	RevMapIterator(const RevMapIterator<Key, Mapped, false, Node>& src) : _ptr(src.getPtr()) {};
-	RevMapIterator(const MapIterator<Key, Mapped, false, Node>& src) : _ptr(src.getPtr()) {};
+	RevMapIterator(node_pointer addr, tree_type* main) : _ptr(addr), _main(main) {};
+	RevMapIterator(const RevMapIterator<Key, Mapped, false, Node>& src) : _ptr(src.getPtr()), _main(src.getMain()) {};
 	~RevMapIterator() {};
 
 	RevMapIterator&	operator=(const RevMapIterator& src)
 	{
-		this->_ptr(src.getPtr());
+		this->_ptr = src.getPtr();
+		this->_main = src.getMain();
+		return (*this);
 	}
 	
 	bool	operator==(const RevMapIterator& src) const
@@ -218,25 +234,35 @@ class RevMapIterator
 	}
 
 	node_pointer	getPtr() const { return (this->_ptr); }
+	tree_type*	getMain() const { return (this->_main); }
 
 	//-----attributes--------
 
 	private:
 
 	node_pointer	_ptr;
+	tree_type*		_main;
 	
 	//----------------------
 
 	void	next() // a corriger si pas de prev ou next => what behavior ?
 	{
+		if (this->_ptr == NULL)
+			return;
+	
+		if (this->_ptr == this->_main->_end)
+		{
+			this->_ptr = this->_main->findMin();
+			return;
+		}
+
 		key_type key = this->_ptr->_pair.first;
 		
 		if (this->_ptr->_right == NULL)
 		{
-			if (this->_ptr->_parent != NULL)
-				this->_ptr = this->_ptr->_parent;
+			this->_ptr = this->_ptr->_parent;
 			
-			if (this->_ptr->_pair.first < key)
+			if (this->_ptr != NULL && this->_ptr->_pair.first < key)
 			{
 				while (this->_ptr->_parent != NULL && key > this->_ptr->_parent->_pair.first)
 					this->_ptr = this->_ptr->_parent;
@@ -254,12 +280,18 @@ class RevMapIterator
 
 	void	prev()
 	{
-		key_type key = this->_ptr->_pair.first;
+		if (this->_ptr == NULL)
+			return;
 		
+		key_type key = this->_ptr->_pair.first;
+	
 		if (this->_ptr->_left == NULL)
 		{
 			while (this->_ptr != NULL && this->_ptr->_pair.first >= key)
-			this->_ptr = this->_ptr->_parent;
+				this->_ptr = this->_ptr->_parent;
+			
+			if (this->_ptr == NULL)
+				this->_ptr = this->_main->_end;
 		}
 		else
 		{

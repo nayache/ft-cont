@@ -11,14 +11,14 @@ clang++ -Wall -Wextra -Werror test_vector.cpp -std=c++98 -D VECTOR=std::vector
 ./a.out
 echo "         ${REV}std::vector finish${NC}";
 echo ""
-sudo cp .log .log1
+cp log log1
 clang++ -Wall -Wextra -Werror test_vector.cpp -std=c++98 -D VECTOR=ft::vector
 echo "         ${REV}ft::vector${NC}";
 echo ""
 ./a.out
 echo "         ${REV}ft::vector finish${NC}";
 echo "diff .log .log1"
-diff .log .log1
+diff log log1
 echo "\033[35m-----End testing for vector-----\033[38m\n\n${NC}"
 
 echo "\033[35m-----Start testing for stack-----\033[38m\n${NC}"

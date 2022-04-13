@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/14 15:51:19 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 13:18:28 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,15 @@ std::string	itoa(long long int number)
 		dest.insert(dest.begin(), '-');
 	
 	return (dest);
+}
+
+template <class T>
+void	swap(T& a, T& b)
+{
+	T c(a);
+	
+	a = b;
+	b = c;
 }
 
  /**

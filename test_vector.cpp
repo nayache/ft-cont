@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 13:54:08 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 16:08:58 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 12:14:32 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -782,7 +782,7 @@ void	test_modifiers(std::ofstream& ofs)
 int	main()
 {
 	std::ofstream file;
-	file.open(".log");
+	file.open("log");
 	std::cout << "\e[1;45m----------CONSTRUCTORS-TEST------:" << RESET << std::endl;
 	//sleep(1);
 	test_constructors(file);

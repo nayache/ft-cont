@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 07:33:26 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 14:41:23 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 12:07:35 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,25 @@ class	ReverseIterator
 	typedef	Iter													iterator_type;
 	
 	ReverseIterator(void) : current(0) {};
-	ReverseIterator(iterator_type x) : current(x) {};
+	ReverseIterator(const iterator_type x) : current(x) {};
+	
 	template <class U>
-	ReverseIterator(const ReverseIterator<U> &other) : current(other) {};
+	ReverseIterator(const ReverseIterator<U> &other) : current(other.base()) {};
 
-	template< class U >
+	template <class U>
 	ReverseIterator& operator=(const ReverseIterator<U>& other)
 	{
 		this->current = other.current;
 		return (*this);
 	}
+	
+	iterator_type	base() const { return (this->current); }
 
 	template <class Iterator>
-	bool	operator!=(const ReverseIterator<Iterator> &rhs) {return (this->current != rhs.current);}
+	bool	operator!=(const ReverseIterator<Iterator> &rhs) {return (this->current != rhs.base());}
 
 	template <class Iterator>
-	bool	operator==(const ReverseIterator<Iterator> &rhs) {return (this->current != rhs.current);}
+	bool	operator==(const ReverseIterator<Iterator> &rhs) {return (this->current != rhs.base());}
 
 	ReverseIterator	operator+(difference_type n) const
 	{
@@ -97,8 +100,10 @@ class	ReverseIterator
 	reference	operator*() {return (*this->current);}
 	pointer		operator->() {return (&(operator*()));}
 
-	bool	operator==(const ReverseIterator& rhs) {return (this->current == rhs.current);}
-		
+	bool	operator==(const ReverseIterator& rhs) {return (this->current == rhs.base());}
+	
+
+
 	protected:
 	
 	Iter	current;
