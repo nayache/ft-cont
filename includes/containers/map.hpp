@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/13 13:35:12 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/13 15:11:23 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "../is_integral.hpp"
 # include "../enable_if.hpp"
 # include "../utils.hpp"
+# include "../lexicographical.hpp"
 # include <unistd.h>
 
 namespace ft {
@@ -114,14 +115,14 @@ class	map
 					++position;
 		}
 		if (position.getPtr() != NULL && position->first == val.first)
-			return (iterator(position.getPtr()));
+			return (iterator(position.getPtr(), &(this->_tree)));
 		
 		if (position.getPtr() != NULL)	
 			ret = this->_tree.insertNode(position.getPtr(), val);
 		else
 			ret = this->_tree.insertNode(this->_tree._root, val);
 			
-		return (iterator(ret));
+		return (iterator(ret, &(this->_tree)));
 	}
 	
 	template <class InputIterator>
@@ -344,6 +345,42 @@ class	map
 
 	//-------------------------
 };
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator==(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
+{
+	return (ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator!=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
+{
+	return (!(lhs == rhs));
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator<(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
+{
+	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator<=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
+{
+	return (!(rhs < lhs));
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator>(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
+{
+	return (rhs < lhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator>=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
+{
+	return (!(lhs < rhs));
+}
 
 }
 

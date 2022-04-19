@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/13 11:15:21 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:59:43 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <stdexcept>
 # include <limits>
 # include <cstddef>
+# include "../iterators/random_iterator.hpp"
 # include "../iterators/reverse_iterator.hpp"
-# include "../iterators/vector_iterator.hpp"
 # include "../enable_if.hpp"
 # include "../is_integral.hpp"
 # include "../lexicographical.hpp"
@@ -40,8 +40,8 @@ class	vector
 		typedef	const T*										const_pointer;
 		typedef	size_t											size_type;
 		typedef typename std::ptrdiff_t							difference_type;
-		typedef typename ft::VecIterator<value_type, false>		iterator;		
-		typedef typename ft::VecIterator<value_type, true>		const_iterator;		
+		typedef RandomIterator<value_type>						iterator;		
+		typedef RandomIterator<const value_type>				const_iterator;		
 		typedef typename ft::ReverseIterator<iterator>			reverse_iterator;		
 		typedef typename ft::ReverseIterator<const_iterator>	const_reverse_iterator;
 	
@@ -90,14 +90,13 @@ class	vector
 
 		vector& operator=(const vector& src)
 		{
-			if (src._size > this->_capacity && this->_data)
-			{
-				delete this->_data;
-				this->_data = this->_alloc.allocate(src._capacity);
-			}
-			this->_size = src._size;
-			this->_capacity = src._capacity;
-			this->assign(src.begin(), src.end());
+			if (&src == this)
+				return (*this);
+
+			this->clear();
+			for (size_type i = 0; i < src.size(); i++)
+				this->push_back(src[i]);
+
 			return (*this);
 		}
 
@@ -123,7 +122,8 @@ class	vector
 		}
 
 		template <class Iterator>
-		void	assign(Iterator first, Iterator last, typename ft::enable_if<!ft::is_integral<Iterator>::value, Iterator>::type* = NullPtr)
+		void	assign(Iterator first, Iterator last,
+		typename ft::enable_if<!ft::is_integral<Iterator>::value, Iterator>::type* = NullPtr)
 		{
 			size_type n = ft::distance(first, last);
 			this->clear();
@@ -167,6 +167,7 @@ class	vector
 		{
 			for (size_type i = 0; i < this->_size; i++)
 				this->_alloc.destroy(this->_data + i);
+			
 			this->_size = 0;
 		}
 
@@ -190,43 +191,39 @@ class	vector
 	
 		iterator	insert(iterator position, const value_type& val)
 		{
-			value_type tmp;
-			value_type tmp2;
-			size_type dist = 0;
-			iterator it = this->begin();
-			while (it != this->end() && it != position)
-			{
-				dist++;
-				it++;
-			}
-			if (position != it && position != this->end())
-				return (this->end() + 4);
-			if (it == position || position == this->end())
-			{
-				if (position == this->end())
-				{
-					push_back(val);
-					return (this->end());
-				}
-				tmp = *it;
-				*it = val;
-				it++;
-			}
-			while (it != this->end())
-			{
-				tmp2 = *it;
-				*it = tmp;
-				tmp = tmp2;
-				it++;
-			}
-			push_back(tmp);
-			return (this->begin() + dist);
+			size_type	ret = position - this->begin();
+			
+			this->insert(position, 1, val);
+			
+			return (iterator(this->_data + ret));
 		}
 
 		void	insert(iterator position, size_type n, const value_type& val)
 		{
+			size_type	start = position - this->begin();
+			
+			while (this->_capacity < this->_size + n)
+			{
+				if (this->_capacity * 2 < this->_size + n)
+					this->reserve(this->_size + n);
+				else
+					this->reserve(this->_capacity * 2);
+			}
+			
+			this->_size += n;
+			
+			if (this->_size - n > 0)
+			{
+				int	index = this->_size - 1;
+
+				while (index - static_cast<int>(n) >= static_cast<int>(start))
+				{
+					this->_data[index] = this->_data[index - n];
+					index--;
+				}
+			}
 			for (size_type i = 0; i < n; i++)
-				position = this->insert(position, val);
+				this->_alloc.construct(this->_data + start + i, val);
 		}
 
 		template <class InputIterator>
@@ -237,34 +234,29 @@ class	vector
 			{
 				value_type val = *first;
 				position = this->insert(position, val);
+				position++;
 				first++;
 			}
 		}
 		
 		iterator	erase(iterator position)
 		{
-			size_type dist = ft::distance(this->begin(), position);
-			iterator it = this->begin();
-			
-			while (it != this->end() && it != position)
-				it++;
-			if (position != it && position != this->end())
-				return (this->end() + 4);
-			while (it != this->end())
-			{
-				if (it + 1 != this->end())
-					*it = *(it + 1);
-				it++;
-			}
+			for (size_type i = position - this->begin() ; i < _size - 1 ; i++)
+				this->_data[i] = this->_data[i + 1];
+
 			this->_size--;
-			return (this->begin() + dist);
+			this->_alloc.destroy(this->_data + this->_size);
+
+			return (position);
 		}
 
 		iterator	erase(iterator first, iterator last)
 		{
 			difference_type n = ft::distance(first, last);
+			
 			for (difference_type i = 0; i < n; i++)
 				first = erase(first);
+			
 			return (first);
 		}
 
@@ -311,12 +303,12 @@ class	vector
 
 		iterator			begin() { return (iterator(this->_data)); }
 		const_iterator		begin() const { return (const_iterator(this->_data)); }
-		reverse_iterator	rbegin() { return (reverse_iterator(this->end() - 1)); }
+		reverse_iterator	rbegin() { return (reverse_iterator(this->end())); }
 		iterator		end() { return (this->begin() + this->_size); }
 		const_iterator	end() const { return (this->begin() + this->_size); }
-		reverse_iterator	rend() { return (reverse_iterator(this->begin() - 1)); }
-		const_reverse_iterator	rbegin() const { return (const_reverse_iterator(this->end() - 1)); }
-		const_reverse_iterator	rend() const { return (const_reverse_iterator(this->_begin() - 1)); }
+		reverse_iterator	rend() { return (reverse_iterator(this->begin())); }
+		const_reverse_iterator	rbegin() const { return (const_reverse_iterator(this->end())); }
+		const_reverse_iterator	rend() const { return (const_reverse_iterator(this->begin())); }
 		
 		/// CAPACITY
 		
@@ -345,16 +337,22 @@ class	vector
 
 		void	reserve(size_type n)
 		{
-			if (n <= this->_capacity)
-				return;
-			pointer tmp = this->_data;
-			iterator it = this->begin();
-			iterator ite = this->end();
-			size_type oldCapacity = this->_capacity;
-			this->_capacity = n;
-			this->_data = this->_alloc.allocate(this->_capacity);
-			assign(it, ite);
-			this->_alloc.deallocate(tmp, oldCapacity);
+			if (n > this->max_size())
+				throw (std::length_error("vector::reserve"));
+
+			else if (n > this->_capacity)
+			{
+				pointer tmp = this->_data;
+				iterator it = this->begin();
+				iterator ite = this->end();
+				size_type oldCapacity = this->_capacity;
+				
+				this->_capacity = n;
+				this->_data = this->_alloc.allocate(this->_capacity);
+				assign(it, ite);
+				
+				this->_alloc.deallocate(tmp, oldCapacity);
+			}
 		}
 
 		void	shrink_to_fit()
@@ -381,15 +379,14 @@ class	vector
 };
 
 template <class T, class Alloc>
+void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+{
+	x.swap(y);
+}
+
+template <class T, class Alloc>
 bool	operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
-	if (lhs.size() != rhs.size())
-		return (false);
-	for (typename vector<T>::size_type i = 0; i < lhs.size(); i++)
-	{
-		if (lhs[i] != rhs[i])
-			return (false);
-	}
-	return (true);
+	return (ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 }
 template <class T, class Alloc>
 bool	operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
@@ -402,7 +399,7 @@ bool	operator<(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
 }
 template <class T, class Alloc>
 bool	operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {
-	return (!(lhs <= rhs));
+	return (rhs < lhs);
 }
 template <class T, class Alloc>
 bool	operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs) {

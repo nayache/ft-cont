@@ -17,7 +17,7 @@ echo "         ${REV}ft::vector${NC}";
 echo ""
 ./a.out
 echo "         ${REV}ft::vector finish${NC}";
-echo "diff .log .log1"
+echo "diff log log1"
 diff log log1
 echo "\033[35m-----End testing for vector-----\033[38m\n\n${NC}"
 

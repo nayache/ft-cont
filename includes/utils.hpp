@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/13 13:18:28 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/14 16:52:50 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,24 +70,15 @@ void	swap(T& a, T& b)
 	b = c;
 }
 
- /**
-    *   Use a boolean to typedef either type 1 or type 2.
-    */
 template <bool isConst, typename isFalse, typename isTrue>
 struct TrueType {};
 
-    /**
-    *   Typedef: pointer, ref...
-    */
 template <typename isFalse, typename isTrue>
 struct TrueType<false, isFalse, isTrue>
 {
     typedef isFalse type;
 };
 
-    /**
-    *   Typedef: const pointer, const ref...
-    */
 template <typename isFalse, typename isTrue>
 struct TrueType<true, isFalse, isTrue>
 {

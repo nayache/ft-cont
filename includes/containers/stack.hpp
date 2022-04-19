@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 10:28:15 by nayache           #+#    #+#             */
-/*   Updated: 2022/02/24 15:41:33 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/15 14:36:30 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ class stack
 	stack (const container_type& ctnr = container_type()) : c(ctnr) {}
 
 	~stack() {}
+	
+	bool	empty() const { return (c.empty()); }
 
-	bool	empty() const { return (this->size() == 0); }
-
-	size_type size() const { return c.size(); }
+	size_type size() const { return (c.size()); }
 
 	void	push(const value_type& val)	{ c.push_back(val); }
 
@@ -42,22 +42,22 @@ class stack
 	reference	top() { return c.back(); }
 	
 	friend bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c == rhs.c;
+		return (lhs.c == rhs.c);
 	}
 	friend bool operator!=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c != rhs.c;
+		return (lhs.c != rhs.c);
 	}
 	friend bool operator<(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c < rhs.c;
+		return (lhs.c < rhs.c);
 	}
 	friend bool operator<=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c <= rhs.c;
+		return (lhs.c <= rhs.c);
 	}
 	friend bool operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c > rhs.c;
+		return (lhs.c > rhs.c);
 	}
 	friend bool operator>=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
-		return lhs.c >= rhs.c;
+		return (lhs.c >= rhs.c);
 	}
 
 	protected:
