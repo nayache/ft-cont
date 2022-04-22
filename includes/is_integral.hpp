@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 14:14:51 by nayache           #+#    #+#             */
-/*   Updated: 2021/12/22 11:19:22 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/22 13:49:04 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 namespace ft {
 
-template <class T, T v>
+template <class t, t v>
 struct integral_constant
 {
-	static const T value = v;
-	typedef T value_type;
-	typedef integral_constant<T, v>	type;
+	static const t value = v;
+	typedef t value_type;
+	typedef integral_constant<t, v>	type;
 };
 
 typedef struct integral_constant<bool, true> true_type;
@@ -41,6 +41,8 @@ template <> struct is_integral<unsigned int>: true_type {};
 template <> struct is_integral<unsigned long int>: true_type {};
 template <> struct is_integral<unsigned long long int>: true_type {};
 
+template <class T> struct is_const: false_type {};
+template <class T> struct is_const<const T>: true_type {};
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/13 13:35:27 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/22 13:55:17 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <memory>
 # include <functional>
 # include <algorithm>
+# include <unistd.h> //a supppppppppp
 
 namespace ft {
 template <class K, class V>
@@ -31,6 +32,8 @@ class Node
 	Node() : _left(NULL), _right(NULL) , _parent(NULL){}
 
 	Node(const value_type& src) : _left(NULL), _right(NULL), _parent(NULL), _pair(src) {}
+	template <class U, class W>
+	Node(const Node<U, W>& src) : _left(src._left), _right(src._right), _parent(src._parent), _pair(src._pair), _height(src._height) {}
 	
 	~Node() {}
 
@@ -49,7 +52,6 @@ class Node
 		this->_pair = src._pair;
 	}
 
-//	private:
 	//---------attributes-------------
 	Node*					_left;
 	Node*					_right;
@@ -59,8 +61,8 @@ class Node
 	//--------------------------------
 };
 
-template <class K, class V, class NodeType = Node<K, V>,
-class Allocator = std::allocator<NodeType>, class Compare = std::less<K> >
+template <class K, class V, class Compare = std::less<K>, class NodeType = Node<K, V>, 
+class Allocator = std::allocator<NodeType> >
 class BinarySearchTree
 {
 	public:
@@ -71,9 +73,10 @@ class BinarySearchTree
 	typedef	NodeType*					node_pointer;
 	typedef K							key_type;
 	typedef V							value_type;
+	typedef Compare						key_compare;
 
 	
-	BinarySearchTree(const alloc_type alloc = alloc_type()) : _alloc(alloc), _root(NULL)
+	BinarySearchTree(const alloc_type alloc = alloc_type(), const key_compare comp = key_compare()) : _alloc(alloc), _comp(comp), _root(NULL)
 	{
 		this->_end = this->_alloc.allocate(1);
 	}
@@ -95,6 +98,7 @@ class BinarySearchTree
 	BinarySearchTree&	operator=(const BinarySearchTree& src)
 	{
 		this->_alloc = src._alloc;
+		this->_comp = src._comp;
 		this->_root = src._root;
 		this->_end = src._end;
 
@@ -195,7 +199,6 @@ class BinarySearchTree
 
 		if (tmp == NULL)
 			removeNode(NULL, NULL, key);
-
 		while (tmp)
 		{
 			if (key == tmp->_pair.first)
@@ -235,7 +238,7 @@ class BinarySearchTree
 		
 		while (linker != NULL)
 		{
-			if (linker->_pair.first > pair.first)
+			if (upper(linker->_pair.first, pair.first))
 			{
 				if (linker->_left == NULL)
 				{
@@ -346,8 +349,19 @@ class BinarySearchTree
 			heightBalance(x->_right);
 		heightBalance(x);
 		
+		if (x != NULL && x->_left != NULL && this->_comp(x->_pair.first, x->_left->_pair.first))
+			swapNode(x, x->_left);
+
 		this->_alloc.destroy(tmp);
 		this->_alloc.deallocate(tmp, 1);
+	}
+	
+	void	swapNode(node_pointer a, node_pointer b)
+	{
+		pair_type c = a->_pair;
+
+		a->_pair = b->_pair;
+		b->_pair = c;
 	}
 
 	void	rightRotate(node_pointer x)
@@ -379,6 +393,9 @@ class BinarySearchTree
 		if (x->_left)
 			heightBalance(x->_left);
 		heightBalance(x);
+		
+		if (x != NULL && x->_left != NULL && this->_comp(x->_pair.first, x->_left->_pair.first))
+			swapNode(x, x->_left);
 	
 		this->_alloc.destroy(tmp);
 		this->_alloc.deallocate(tmp, 1);
@@ -408,10 +425,10 @@ class BinarySearchTree
 		return (tmp);
 	}
 
-//	private:
 	//--------------attributes----------
 	
 	alloc_type				_alloc;
+	key_compare				_comp;
 	node_pointer			_end;
 	node_pointer			_root;
 	
@@ -451,7 +468,7 @@ class BinarySearchTree
 		if (key == Bst->_pair.first)
 			return (Bst);
 		
-		if (key < Bst->_pair.first)
+		if (this->_comp(key, Bst->_pair.first))
 		{
 			if (Bst->_left == NULL)
 				return (NULL);
@@ -467,6 +484,18 @@ class BinarySearchTree
 		}
 	}
 	
+	bool    upper(const key_type& a, const key_type& b)
+    {
+        return (this->_comp(a, b) == false && equal(a, b) == false);
+    }
+    
+    bool    equal(const key_type& a, const key_type& b)
+    {
+        if (this->_comp(a, b) == false && this->_comp(b, a) == false)
+            return (true);
+        return (false);
+    }	
+
 	void printNode(node_pointer x)
 	{
 		std::cout << "\033[1;28m" << x << "\033[0;28m";
@@ -487,6 +516,31 @@ class BinarySearchTree
 		else
 			std::cout << "\033[1;36mnil\033[0;28m ";
 		std::cout << std::endl;
+	}
+	void print2(node_type* root, int space)
+	{
+    	if (root == NULL)
+		{
+        	return;
+		}
+ 
+  	 	space += 5;
+ 
+		if (root->_right != NULL)
+    		print2(root->_right, space);
+ 
+    	std::cout << std::endl;
+    	for (int i = 2; i < space; i++)
+        	std::cout << " ";
+    	std::cout << root->_pair.first <<"\n";
+ 
+		if (root->_left != NULL)
+    		print2(root->_left, space);
+	}
+ 
+	void print()
+	{
+    	print2(this->_root, 0);
 	}
 };
 

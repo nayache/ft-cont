@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/22 15:31:27 by nayache           #+#    #+#             */
-/*   Updated: 2022/03/08 17:09:43 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/20 11:18:02 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ struct pair
 
 	pair&	operator=(const pair& pr)
 	{
+		if (this == &pr)
+			return (*this);
+
 		this->first = pr.first;
 		this->second = pr.second;
 		return (*this);

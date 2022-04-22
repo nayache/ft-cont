@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/19 16:39:20 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/14 16:52:50 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/22 13:50:32 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,28 +62,13 @@ std::string	itoa(long long int number)
 }
 
 template <class T>
-void	swap(T& a, T& b)
+void	swapp(T& a, T& b)
 {
 	T c(a);
 	
 	a = b;
 	b = c;
 }
-
-template <bool isConst, typename isFalse, typename isTrue>
-struct TrueType {};
-
-template <typename isFalse, typename isTrue>
-struct TrueType<false, isFalse, isTrue>
-{
-    typedef isFalse type;
-};
-
-template <typename isFalse, typename isTrue>
-struct TrueType<true, isFalse, isTrue>
-{
-    typedef isTrue type;
-};
 
 }
 
