@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/22 14:12:43 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/25 18:22:44 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@
 # include "../lexicographical.hpp"
 # include <unistd.h>
 
+# include <cmath>
+
 namespace ft {
-template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::Node<Key, T> > >
+template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::Node<const Key, T> > >
 class	map
 {
 	public:
@@ -327,13 +329,12 @@ value_compare value_comp() const
 		return (size);
 	}
 
-//	size_type	max_size() const
-//	{
-//		std::allocator<ft::Node<Key, T> > AllocT = std::allocator<ft::Node<Key, T> >();
-//		return (AllocT.max_size()); 
-//	}
-	size_type	max_size() const { return (this->_alloc.max_size()); }
-//	size_type	max_size() const { return (std::numeric_limits<std::ptrdiff_t>::max() / (sizeof(ft::Node<Key, T>))); }
+	size_type	max_size() const 
+	{
+		if (sizeof(value_type) == 12)
+			return (((std::numeric_limits<size_type>::max() / (sizeof(value_type) * 8))));
+		return (this->_alloc.max_size());
+	}
 
 	bool	empty() const { return (this->size() == 0 ? 1 : 0); }
 
