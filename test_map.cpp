@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 14:20:55 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/26 16:05:16 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/27 17:28:30 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <map>
 # include "includes/containers/map.hpp"
+# include "includes/lexicographical.hpp"
 # include <cassert>
 # include <fstream>
 
@@ -285,7 +286,7 @@ void	test_capacity(std::ofstream& ofs)
 void	test_modifiers(std::ofstream& ofs)
 {
 //-----------------Insert---------------------
-		
+	
 	MAP<int, std::string> mp;
 
 	mp.insert(PAIR<int, std::string>(4, "quatre"));
@@ -293,7 +294,109 @@ void	test_modifiers(std::ofstream& ofs)
 	mp.insert(PAIR<int, std::string>(6, "six"));
 	mp.insert(PAIR<int, std::string>(7, "sept"));
 
+	printSize(mp, ofs);
 	printAttributes(mp, ofs);
+	
+	PAIR<MAP<int, std::string>::iterator, bool>	ret;
+	
+	ret = mp.insert(PAIR<int, std::string>(4, "newquatre"));
+	ofs << std::boolalpha;
+	ofs << ret.second << " " << ret.first->first << " " << ret.first->second << std::endl;
+
+	ret = mp.insert(PAIR<int, std::string>(10, "dix"));
+	ofs << ret.second << " " << ret.first->first << " " << ret.first->second << std::endl;
+	ret = mp.insert(PAIR<int, std::string>(12, "douze"));
+	ofs << ret.second << " " << ret.first->first << " " << ret.first->second << std::endl;
+	ret = mp.insert(PAIR<int, std::string>(5, "newcinq"));
+	ofs << ret.second << " " << ret.first->first << " " << ret.first->second << std::endl;
+	ret = mp.insert(PAIR<int, std::string>(1, "un"));
+	ofs << ret.second << " " << ret.first->first << " " << ret.first->second << std::endl;
+	
+	MAP<int, std::string> mp2;
+	MAP<int, std::string>::iterator ret2;
+
+	mp2.insert(mp.begin(), mp.end());
+	assert(ft::equal(mp2.begin(), mp2.end(), mp.begin(), mp.end()) == true);
+	
+	ret2 = mp2.insert(mp2.begin(), PAIR<int, std::string>(111, "new"));
+	assert(ret2->first == 111);
+	
+	ret2 = mp2.insert(mp2.begin(), PAIR<int, std::string>(222, "new"));
+	assert(ret2->first == 222);
+	
+	ret2 = mp2.insert(mp2.begin(), PAIR<int, std::string>(111, "newnew"));
+	assert(ret2->first == 111 && ret2->second == "new");
+	
+	ret2 = mp2.insert(mp2.end(), PAIR<int, std::string>(44, "end"));
+	assert(ret2->first == 44);
+	
+	ret2 = mp2.insert(mp2.end(), PAIR<int, std::string>(48, "end"));
+	assert(ret2->first == 48);
+	
+	printAttributes(mp, ofs);
+	printSize(mp, ofs);
+	printAttributes(mp2, ofs);
+	printSize(mp2, ofs);
+	
+	//------------Time test(insert lot of nodes in ascending order)---------
+	
+	MAP<int, std::string>	mp3;
+
+	for (int i = 0; i < 900000; i++)
+		mp3.insert(PAIR<int, std::string>(i, "--"));
+
+	printSize(mp3, ofs);
+	
+//-----------------------Erase--------------------------------
+
+	MAP<int, std::string> err;
+
+	err[1] = "uno";
+	err[2] = "dos";
+	err[3] = "tres";
+	err[4] = "cuatro";
+	err[5] = "cinco";
+
+	err.erase(err.begin());
+	assert(err.size() == 4);
+	assert(err.begin()->first != 1);
+	
+	err.erase(--err.end());
+	assert(err.size() == 3);
+	assert((--err.end())->first != 1);
+
+	MAP<int, std::string>::size_type ret3;
+
+	ret3 = err.erase(3);
+	assert(ret3 == 1 && err.size() == 2);
+	
+	ret3 = err.erase(3);
+	assert(ret3 == 0 && err.size() == 2);
+	
+	err.clear();
+	
+	for(int i = 0; i < 25; i++)
+		err[i] = ":o";
+
+	while (err.empty() == false)
+		err.erase(err.begin());
+	
+	assert(err.size() == 0);
+	assert(err.empty() == true);
+
+	for(int i = 0; i < 500000; i++)
+		err[i] = ";)";
+	
+	err.erase(err.begin(), err.end());
+
+	assert(err.size() == 0);
+	assert(err.empty() == true);
+
+//--------------------Swap------------------------
+
+
+
+
 }
 
 int	main(void)

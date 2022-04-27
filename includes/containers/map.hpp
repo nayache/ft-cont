@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/25 18:22:44 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/27 12:57:33 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,10 +367,7 @@ value_compare value_comp() const
 	bool	equal(const key_type& a, const key_type& b)
 	{
 		if (this->_comp(a, b) == false && this->_comp(b, a) == false)
-		{
-			std::cout << "ici\n";
 			return (true);
-		}
 		return (false);
 	}
 
