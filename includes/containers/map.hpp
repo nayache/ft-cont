@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/27 12:57:33 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/28 16:31:49 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,17 @@ class	map
 	{
 		node_type*	ret;
 		
+		if (position.getPtr() == this->_tree._end)
+		{
+			if (this->size() == 0)
+			{
+				this->insert(val);
+				ret = this->_tree._root;
+			}
+			else
+				ret = this->_tree.insertNode(this->_tree._root, val);
+			return (iterator(ret, &(this->_tree)));
+		}
 		if (position.getPtr() != NULL && this->_comp(val.first, position->first))
 		{
 			while (position.getPtr() != NULL && this->_comp(val.first, position->first))

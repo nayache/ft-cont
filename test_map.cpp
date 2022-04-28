@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 14:20:55 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/27 17:28:30 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/28 18:13:25 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	test_constructors(std::ofstream& ofs)
 	printAttributes(mp4, ofs);
 	
 	assert(mp4.size() == 1);
+
 //------------Copy-------------
 
 	MAP<char, double> mapp;
@@ -286,7 +287,7 @@ void	test_capacity(std::ofstream& ofs)
 void	test_modifiers(std::ofstream& ofs)
 {
 //-----------------Insert---------------------
-	
+
 	MAP<int, std::string> mp;
 
 	mp.insert(PAIR<int, std::string>(4, "quatre"));
@@ -294,7 +295,6 @@ void	test_modifiers(std::ofstream& ofs)
 	mp.insert(PAIR<int, std::string>(6, "six"));
 	mp.insert(PAIR<int, std::string>(7, "sept"));
 
-	printSize(mp, ofs);
 	printAttributes(mp, ofs);
 	
 	PAIR<MAP<int, std::string>::iterator, bool>	ret;
@@ -334,9 +334,7 @@ void	test_modifiers(std::ofstream& ofs)
 	assert(ret2->first == 48);
 	
 	printAttributes(mp, ofs);
-	printSize(mp, ofs);
 	printAttributes(mp2, ofs);
-	printSize(mp2, ofs);
 	
 	//------------Time test(insert lot of nodes in ascending order)---------
 	
@@ -394,23 +392,273 @@ void	test_modifiers(std::ofstream& ofs)
 
 //--------------------Swap------------------------
 
+	MAP<int, std::string>	foo, bar;
+
+	foo[2] = "banane";
+	foo[4] = "peche";
+	foo[6] = "abricot";
+	foo[8] = "mangue";
+
+	bar[1] = "fraise";
+	bar[3] = "ananas";
+	bar[5] = "framboise";
+
+	MAP<int, std::string>::iterator it01 = foo.begin();
+	MAP<int, std::string>::iterator it02 = bar.begin();
+	
+	foo.swap(bar);
+	printAttributes(foo, ofs);
+	printAttributes(bar, ofs);
+
+	assert(foo.size() == 3);
+	assert(bar.size() == 4);
+	assert(foo.begin() == it02);
+	assert(bar.begin() == it01);
+
+//----------------Clear---------------------
+
+	MAP<int, char>	pam;
+
+	for (int i = 0; i < 10; i++)
+		pam[i] = i + 97;
+	
+	printSize(pam, ofs);
+	printAttributes(pam, ofs);
+
+	pam.clear();
+	printAttributes(pam, ofs);
+	assert(pam.size() == 0 && pam.empty() == true);
+
+	pam[0] = 'p';
+	pam[1] = 's';
+	pam[2] = 'g';
+
+	pam.clear();
+	printAttributes(pam, ofs);
+	assert(pam.size() == 0 && pam.empty() == true);
+
+	pam.clear();
+	assert(pam.size() == 0 && pam.empty() == true);
+}
+
+void	test_observers(std::ofstream& ofs)
+{
+//----------------Key comp--------------------
+
+	MAP<int, char> mapi;
+
+	mapi[12] = 'a';
+	mapi[30] = 'b';
+	mapi[10] = 'c';
+	mapi[19] = 'd';
+	mapi[50] = 'e';
+	mapi[20] = 'f';
+
+	MAP<int, char>::key_compare comp = mapi.key_comp();
+	MAP<int, char>::iterator	iter1 = mapi.begin();
+	MAP<int, char>::iterator	iter2 = ++mapi.begin();
+
+	ofs << "comp(" << iter2->first << ", " << iter1->first << ")";
+	ofs << std::boolalpha << " => " << comp(iter2->first, iter1->first) << std::endl;
+	while (iter2 != mapi.end())
+	{
+		ofs << "comp(" << iter1->first << ", " << iter2->first << ")";
+		ofs << std::boolalpha << " => " << comp(iter1->first, iter2->first) << std::endl;
+		++iter1;
+		++iter2;
+	}
+
+//----------------Value comp--------------------
+
+	MAP<char, int> mymap;
+
+	mymap['a'] = 150;
+	mymap['b'] = 250;
+	mymap['c'] = 50;
+	mymap['d'] = 850;
+	mymap['e'] = 750;
+	mymap['f'] = 350;
+
+	MAP<char, int>::iterator	ite1 = mymap.begin();
+	MAP<char, int>::iterator	ite2 = ++mymap.begin();
+
+	ofs << "comp(" << ite2->first << ", " << ite1->first << ")";
+	ofs << std::boolalpha << " => " << mymap.value_comp()(*ite2, *ite1) << std::endl;
+	while (ite2 != mymap.end())
+	{
+		ofs << "comp(" << ite1->first << ", " << ite2->first << ")";
+		ofs << std::boolalpha << " => " << mymap.value_comp()(*ite1, *ite2) << std::endl;
+		++ite1;
+		++ite2;
+	}
+}
+
+void	test_operations(std::ofstream& ofs)
+{
+//-----------------Find---------------------
+
+	MAP<int, std::string> mamap;
+
+	mamap[0] = "00";
+	mamap[1] = "01";
+	mamap[2] = "02";
+	mamap[3] = "03";
+
+	MAP<int, std::string>::iterator it;
+	MAP<int, std::string>::const_iterator cit;
+
+	it = mamap.find(4);
+	if (it != mamap.end())
+		mamap.erase(4);
+
+	it = mamap.find(10);
+	if (it != mamap.end())
+		mamap.erase(10);
+	
+	it = mamap.find(1);
+	if (it != mamap.end())
+		mamap.erase(1);
+	
+	it = mamap.find(2);
+	if (it != mamap.end())
+		mamap.erase(2);
+
+	assert(mamap.size() == 2 && mamap.empty() == false);
+	printAttributes(mamap, ofs);
+
+	cit = mamap.find(1010101001);
+	if (cit != mamap.end())
+		mamap.erase(1010101001);
+	
+	cit = mamap.find(3);
+	if (cit != mamap.end())
+		mamap.erase(3);
+	
+	cit = mamap.find(0);
+	if (cit != mamap.end())
+		mamap.erase(0);
+
+	assert(mamap.size() == 0 && mamap.empty() == true);
+
+//------------------Count------------------
+
+	MAP<char, int> map;
+
+	map['a'] = 100;
+	map['d'] = 200;
+	map['f'] = 300;
+	map['g'] = 400;
+
+	printAttributes(map, ofs);
+
+	for (char c = 'a'; c < 'i'; c++)
+	{
+		ofs << c;
+		if (map.count(c) == 1)
+			ofs << " is a element of map";
+		else
+			ofs << " is not a element of map";
+		ofs << std::endl;
+	}
+
+//----------------Lower bound---------------
+
+	MAP<int, std::string> lmap;
+
+	lmap[0] = "orange";
+	lmap[2] = "yellow";
+	lmap[4] = "red";
+	lmap[6] = "blue";
+	lmap[8] = "green";
+	lmap[10] = "white";
+
+	MAP<int, std::string>::iterator lit;
+	MAP<int, std::string>::iterator litc;
+
+	for (int i = 0; i < 10; i++)
+	{
+		lit = lmap.lower_bound(i);
+		ofs << lit->first << " " << lit->second << std::endl;
+	}
+
+	litc = lmap.lower_bound(9);
+	lmap.erase(litc);
+	
+	assert(lmap.size() == 5);
+	printAttributes(lmap, ofs);
+
+//----------------Upper bound---------------
 
 
+	MAP<int, std::string> umap;
+
+	umap[1] = "grey";
+	umap[3] = "pink";
+	umap[5] = "purple";
+	umap[7] = "back";
+	umap[9] = "brown";
+	umap[11] = "magenta";
+
+	MAP<int, std::string>::iterator uit;
+	MAP<int, std::string>::iterator cuit;
+
+	for (int i = 1; i < 11; i++)
+	{
+		uit = umap.upper_bound(i);
+		ofs << uit->first << " " << uit->second << std::endl;
+	}
+
+	cuit = umap.upper_bound(9);
+	umap.erase(cuit);
+	
+	assert(umap.size() == 5);
+	printAttributes(umap, ofs);
+
+//---------------Equal range----------------
+
+	MAP<char, double> mp;
+
+	mp['a'] = 12.1;
+	mp['b'] = 18.8;
+	mp['c'] = 21.4;
+	mp['d'] = 99.9;
+	mp['e'] = 33.2;
+	mp['f'] = 20.0;
+
+	PAIR<MAP<char, double>::iterator, MAP<char, double>::iterator> ret;
+	PAIR<MAP<char, double>::const_iterator, MAP<char, double>::const_iterator> cret;
+
+	ret = mp.equal_range('a');
+	ofs << "lower_bounds points to: ";
+	ofs << ret.first->first << " " << ret.first->second << std::endl;
+	ofs << "upper_bounds points to: ";
+	ofs << ret.second->first << " " << ret.second->second << std::endl;
+	
+	cret = mp.equal_range('c');
+	ofs << "lower_bounds points to: ";
+	ofs << cret.first->first << " " << cret.first->second << std::endl;
+	ofs << "upper_bounds points to: ";
+	ofs << cret.second->first << " " << cret.second->second << std::endl;
+	
+	ret = mp.equal_range('e');
+	ofs << "lower_bounds points to: ";
+	ofs << ret.first->first << " " << ret.first->second << std::endl;
+	ofs << "upper_bounds points to: ";
+	ofs << ret.second->first << " " << ret.second->second << std::endl;
 
 }
 
 int	main(void)
 {
 	std::ofstream file;
-	file.open("log");
+	file.open("log1");
 
 	test_constructors(file);
-	
 	test_iterators(file);
-	
 	test_capacity(file);
-
 	test_modifiers(file);
+	test_observers(file);	
+	test_operations(file);
 	
 	return (0);
 }
