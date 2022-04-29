@@ -6,7 +6,7 @@
 #    By: nayache <nayache@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/29 16:09:23 by nayache           #+#    #+#              #
-#    Updated: 2022/04/29 19:34:27 by nayache          ###   ########.fr        #
+#    Updated: 2022/04/29 19:42:45 by nayache          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,11 @@ NAME1	= std_containers_test
 
 NAME2	= ft_containers_test
 
-SRCS	= test.cpp
+SRCS	= main.cpp
 
-OBJS	= $(SRCS:test.cpp=STD_TEST.o)
+OBJS	= $(SRCS:main.cpp=STD_TEST.o)
 
-OBJS2	= $(SRCS:test.cpp=FT_TEST.o)
+OBJS2	= $(SRCS:main.cpp=FT_TEST.o)
 
 CC		= clang++
 
@@ -30,10 +30,10 @@ CFLAGS2	= -Wall -Wextra -Werror -std=c++98 -D STACK=ft::stack \
 
 all		:	std ft
 
-STD_TEST.o:	test.cpp
+STD_TEST.o:	main.cpp
 		$(CC) $(CFLAGS) $(INC) -I includes/ -c $< -o $@
 
-FT_TEST.o:	test.cpp
+FT_TEST.o:	main.cpp
 		$(CC) $(CFLAGS2) $(INC) -I includes/ -c $< -o $@
 
 $(NAME1): 	$(OBJS)
