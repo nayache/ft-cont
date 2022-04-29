@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 14:20:55 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/28 18:13:25 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/29 17:30:15 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,49 +15,12 @@
 
 # include <map>
 # include "includes/containers/map.hpp"
+# include "includes/test.hpp"
 # include "includes/lexicographical.hpp"
 # include <cassert>
 # include <fstream>
 
-class Object
-{
-	public:
-	int		a;
-	char	b;
-	double	c;
-	void*	d;
-};
-
-template <typename Iterator>
-void	printPair(Iterator& x, std::ofstream &ofs)
-{
-	ofs << "(" << x->first << ") (" << x->second << ")" << std::endl;
-}
-
-template <class M>
-void	printSize(M& src, std::ofstream& ofs)
-{
-	ofs << "size: " << src.size() << std::endl;
-	ofs << "max_size: " << src.max_size() << std::endl;
-}
-
-template <class M>
-void	printAttributes(M& src, std::ofstream& ofs)
-{
-	ofs << "------------Print--------------" << std::endl;
-	printSize(src, ofs);
-	ofs << std::boolalpha;
-	
-	ofs << "empty : " << src.empty() << std::endl;
-	ofs << "Content :" << std::endl;
-	
-	for (typename M::iterator it = src.begin(); it != src.end(); it++)
-		ofs << "[" << it->first << "] [" << it->second << "]" << std::endl;
-	
-	ofs << "-------------------------------" << std::endl;
-}
-
-void	test_constructors(std::ofstream& ofs)
+void	tst_constructors(std::ofstream& ofs)
 {
 //----------Default--------------
 	
@@ -126,7 +89,7 @@ void	test_constructors(std::ofstream& ofs)
 	assert(first.size() == 0);
 }
 
-void	test_iterators(std::ofstream& ofs)
+void	tst_iterators(std::ofstream& ofs)
 {
 //-----------------Begin/End----------------------
 	
@@ -203,7 +166,7 @@ void	test_iterators(std::ofstream& ofs)
 	
 }
 
-void	test_capacity(std::ofstream& ofs)
+void	tst_capacity(std::ofstream& ofs)
 {
 //-------------------Empty-------------------
 	
@@ -284,7 +247,7 @@ void	test_capacity(std::ofstream& ofs)
 	printSize(map10, ofs);
 }
 
-void	test_modifiers(std::ofstream& ofs)
+void	tst_modifiers(std::ofstream& ofs)
 {
 //-----------------Insert---------------------
 
@@ -441,7 +404,7 @@ void	test_modifiers(std::ofstream& ofs)
 	assert(pam.size() == 0 && pam.empty() == true);
 }
 
-void	test_observers(std::ofstream& ofs)
+void	tst_observers(std::ofstream& ofs)
 {
 //----------------Key comp--------------------
 
@@ -493,7 +456,7 @@ void	test_observers(std::ofstream& ofs)
 	}
 }
 
-void	test_operations(std::ofstream& ofs)
+void	tst_operations(std::ofstream& ofs)
 {
 //-----------------Find---------------------
 
@@ -648,17 +611,16 @@ void	test_operations(std::ofstream& ofs)
 
 }
 
-int	main(void)
+int	test_map(std::ofstream& file)
 {
-	std::ofstream file;
-	file.open("log1");
-
-	test_constructors(file);
-	test_iterators(file);
-	test_capacity(file);
-	test_modifiers(file);
-	test_observers(file);	
-	test_operations(file);
+	file << "\e[44m\e[1;97m" << "==============MAP TEST=================" << RESET << std::endl;
+	tst_constructors(file);
+	tst_iterators(file);
+	tst_capacity(file);
+	tst_modifiers(file);
+	tst_observers(file);	
+	tst_operations(file);
+	file << "\e[44m\e[1;97m" << "=============END MAP TEST==============" << RESET << std::endl;
 	
 	return (0);
 }

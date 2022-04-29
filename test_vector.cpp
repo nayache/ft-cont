@@ -6,16 +6,14 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 13:54:08 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/13 12:14:32 by nayache          ###   ########.fr       */
+/*   Updated: 2022/04/29 17:35:48 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "test.hpp"
-#include <unistd.h>
+#include "includes/test.hpp"
 
 void	test_constructors(std::ofstream& ofs)
 {
-	std::cout << YELLOW << "VECTOR() testing:" << RESET << std::endl;
 	VECTOR<float> defaultVec;
 	if (defaultVec.size() != 0)
 		std::cout << RED << "error default constructor: size not equal at 0" << RESET << std::endl;
@@ -23,7 +21,6 @@ void	test_constructors(std::ofstream& ofs)
 		std::cout << RED << "error default constructor: capacity not equal at 0" << RESET << std::endl;
 	printVector(defaultVec, ofs);
 	
-	std::cout << YELLOW << "VECTOR(n) testing:" << RESET << std::endl;
 	VECTOR<float> Vec(3);
 	if (Vec.size() != 3)
 		std::cout << RED << "error constructor(n): size not equal at 0" << RESET << std::endl;
@@ -33,7 +30,6 @@ void	test_constructors(std::ofstream& ofs)
 	if (Vec[0] || Vec[1] || Vec[2])
 		std::cout << RED << "error default constructor: value not at 0" << RESET << std::endl;
 	
-	std::cout << YELLOW << "VECTOR(n, v) testing:" << RESET << std::endl;
 	VECTOR<float> fillVec(5, 50.5);
 	if (fillVec.size() != 5)
 		std::cout << RED << "error constructor(n, v): size not at the right value" << RESET << std::endl;
@@ -47,7 +43,6 @@ void	test_constructors(std::ofstream& ofs)
 			std::cout << RED << "error constructor(n, v): elements not at the right value" << RESET << std::endl;
 	}
 	
-	std::cout << YELLOW << "VECTOR(it, ite) testing:" << RESET << std::endl;
 	VECTOR<float> rangeVec(fillVec.begin(), fillVec.end());
 	if (rangeVec.size() != 5)
 		std::cout << RED << "error constructor(begin, end): size not at the right value" << RESET << std::endl;
@@ -60,7 +55,6 @@ void	test_constructors(std::ofstream& ofs)
 			std::cout << RED << "error constructor(begin, end): elements not at the right value" << RESET << std::endl;
 	}
 	
-	std::cout << YELLOW << "VECTOR(VECTOR& copy) testing:" << RESET << std::endl;
 	VECTOR<float> copyVec(rangeVec);
 	if (copyVec.size() != 5)
 		std::cout << RED << "error copy constructor: size not at the right value" << RESET << std::endl;
@@ -75,7 +69,6 @@ void	test_constructors(std::ofstream& ofs)
 			std::cout << RED << "error copy constructor: elements not at the right value" << RESET << std::endl;
 	}
 	
-	std::cout << YELLOW << "VECTOR operator=(VECTOR& copy) testing:" << RESET << std::endl;
 	VECTOR<float> copyOperatorVec = copyVec;
 	if (copyVec.size() != 5)
 		std::cout << RED << "error assign constructor: size not at the right value" << RESET << std::endl;
@@ -91,7 +84,6 @@ void	test_constructors(std::ofstream& ofs)
 	}
 
 	float	tab[] = {3, 30, 300, 3000};
-	std::cout << YELLOW << "VECTOR(tab.it, tab.ite) testing:" << RESET << std::endl;
 	VECTOR<float>::iterator it(tab);
 	VECTOR<float> tabVec(it, it + 4);
 	if (tabVec.size() != 4)
@@ -107,13 +99,11 @@ void	test_constructors(std::ofstream& ofs)
 			std::cout << RED << "error constructor(tab.begin, tab.end): elements not at the right value" << RESET << std::endl;
 		val *= 10;
 	}
-	std::cout << GREEN << "VECTOR constructors ok" << RESET << std::endl;
 }
 
 void	test_iterators(std::ofstream& ofs)
 {
 	//----------BEGIN()/END()---------
-	std::cout << YELLOW << ".begin() && .end() testing" << RESET << std::endl;
 
 	VECTOR<int> vec(1, 2);
 	vec.push_back(4);
@@ -142,12 +132,8 @@ void	test_iterators(std::ofstream& ofs)
 		it++;
 		v += 2;
 	}
-	if (it == vec.end())
-		std::cout << "VECTOR::iterator are iterable" << std::endl;
-	std::cout << GREEN << ".begin() && .end() ok" << RESET << std::endl;
 
 	//---------RBEGIN()/REND()--------
-	std::cout << YELLOW << ".rbegin() && .rend() testing" << RESET << std::endl;
 	
 	VECTOR<int> rvec(1, 1);
 	rvec.push_back(2);
@@ -179,13 +165,11 @@ void	test_iterators(std::ofstream& ofs)
 	printVector(rvec, ofs);
 	if (rit == rvec.rend() - 1)
 		std::cout << "VECTOR::reverse_iterator are iterable" << std::endl;
-	std::cout << GREEN << ".rbegin() && .rend() ok" << RESET << std::endl;
 }
 
 void	test_capacity(void)
 {
 	//--------SIZE()----------------
-	std::cout << YELLOW << ".size() testing" << RESET << std::endl;
 	
 	VECTOR<int> vec;
 	if (vec.size() != 0)
@@ -208,11 +192,8 @@ void	test_capacity(void)
 	if (vec3.size() != 6)
 		std::cout << RED << "error: size invalid" << RESET << std::endl;
 	
-	std::cout << GREEN << ".size(): ok" << RESET << std::endl;
-	//max_size()
-	
 	//-------------CAPACITY()-------------
-	std::cout << YELLOW << ".capacity() testing" << RESET << std::endl;
+	
 	VECTOR<int> test;
 	if (test.capacity() != 0)
 		std::cout << RED << "error: capacity invalid" << RESET << std::endl;
@@ -241,11 +222,7 @@ void	test_capacity(void)
 	if (test3.capacity() < 7)
 		std::cout << RED << "error: capacity invalid" << RESET << std::endl;
 	
-	std::cout << GREEN << ".capacity(): ok" << RESET << std::endl;
-
 	//-------------EMPTY()-----------
-
-	std::cout << YELLOW << ".empty() testing" << RESET << std::endl;
 
 	VECTOR<int> e;
 	if (e.empty() == false)
@@ -262,11 +239,7 @@ void	test_capacity(void)
 	if (e1.empty() == false)
 		std::cout << RED << "error empty: invalid value" << RESET << std::endl;
 	
-	std::cout << GREEN << ".empty() ok" << RESET << std::endl;
-
 	//---------RESERVE()------------
-
-	std::cout << YELLOW << ".reserve() testing" << RESET << std::endl;
 
 	VECTOR<int> res(4, 2);
 	VECTOR<int>::size_type start_size = res.size();
@@ -292,11 +265,8 @@ void	test_capacity(void)
 	if (res.size() != start_size)
 		std::cout << RED << "error reserve: size has been affected" << RESET << std::endl;
 	
-	std::cout << GREEN << ".reserve() ok" << RESET << std::endl;
-
 	//---------RESIZE()-----------
 
-	std::cout << YELLOW << ".resize() testing" << RESET << std::endl;
 	VECTOR<int> tst(10, 9);
 
 	tst.resize(2);
@@ -317,15 +287,13 @@ void	test_capacity(void)
 	if (tst[5] || tst[6] || tst[7] || tst[8] || tst[9] || tst[10] || tst[11])
 		std::cout << RED << "error resize: n elements created not equal at 0" << RESET << std::endl;
 	
-	std::cout << GREEN << ".resize() ok" << RESET << std::endl;
-	
 	//----------MAXSIZE()--------
 }
 
 void	test_access(std::ofstream& ofs)
 {
 	//-------OPERATOR[]---------
-	std::cout << YELLOW << "operator[] testing" << RESET << std::endl;
+	
 	VECTOR<double> test(6, 0);
 	test[0] = 11.11;
 	test[1] = 22.11;
@@ -353,9 +321,7 @@ void	test_access(std::ofstream& ofs)
 	
 	ofs << std::endl;
 
-	std::cout << GREEN << "operator[] ok" << RESET << std::endl;
 	//----------AT()----------
-	std::cout << YELLOW << ".at() testing" << RESET << std::endl;
 
 	VECTOR<std::string> testAt(5);
 	for (VECTOR<std::string>::size_type i = 0; i < 5; i++)
@@ -411,10 +377,7 @@ void	test_access(std::ofstream& ofs)
 		ofs << e.what() << std::endl;
 	}
 
-	std::cout << GREEN << ".at() ok" << RESET << std::endl;
-
 	//---------FRONT()------------
-	std::cout << YELLOW << ".front() testing" << RESET << std::endl;
 	
 	VECTOR<char> vect;
 	vect.push_back('h');
@@ -438,10 +401,7 @@ void	test_access(std::ofstream& ofs)
 	if (vect2.front() != 'Z')
 		std::cout << RED << "error front(): front returns(reference) is a bad value" << RESET << std::endl;
 	
-	std::cout << GREEN << ".front() ok" << RESET << std::endl;
-
 	//---------BACK()-------------
-	std::cout << YELLOW << ".back() testing" << RESET << std::endl;
 
 	VECTOR<std::string> tab;
 
@@ -471,15 +431,12 @@ void	test_access(std::ofstream& ofs)
 		c--;
 	}
 	ofs << std::endl;
-
-	std::cout << GREEN << ".back() ok" << RESET << std::endl;
 }
 
 void	test_modifiers(std::ofstream& ofs)
 {
 	//----------PUSH_BACK()-----------
-	std::cout << YELLOW << ".push_back() testing" << RESET << std::endl;
-
+	
 	VECTOR<double> vec;
 	
 	VECTOR<double>::value_type val = 0;
@@ -506,10 +463,7 @@ void	test_modifiers(std::ofstream& ofs)
 	if (*(vec2.end() - 1) != 12.12)
 		std::cout << RED << "error push_back(): value push not at the end of array" << RESET << std::endl;
 	
-	std::cout << GREEN << ".push_back() ok" << RESET << std::endl;
-
 	//-----------POP_BACK()------------
-	std::cout << YELLOW << ".pop_back() testing" << RESET << std::endl;
 
 	VECTOR<int>	test(10);
 
@@ -529,10 +483,7 @@ void	test_modifiers(std::ofstream& ofs)
 	if (test.size() != 7)
 		std::cout << RED << "error pop_back(): size is not updated correctly" << RESET << std::endl;
 	
-	std::cout << GREEN << ".pop_back() ok" << RESET << std::endl;
-	
 	//------------ASSIGN()--------------
-	std::cout << YELLOW << ".assign() testing" << RESET << std::endl;
 	
 	VECTOR<int> vect;
 
@@ -626,10 +577,7 @@ void	test_modifiers(std::ofstream& ofs)
 	if (vect3.size() != 6)
 		std::cout << RED << "error assign(): size are not updated correctly after function call" << RESET << std::endl;
 
-	std::cout << GREEN << ".assign() ok" << RESET << std::endl;
-	
 	//-----------ERASE()-------------
-	std::cout << YELLOW << ".erase() testing" << RESET << std::endl;
 
 	VECTOR<float> vecTest;
 
@@ -669,10 +617,7 @@ void	test_modifiers(std::ofstream& ofs)
 	if (vecTest.size() != 4)
 		std::cout << RED << "error erase(): size not updated after remove element!" << RESET << std::endl;
 	
-	std::cout << GREEN << ".erase() ok" << RESET << std::endl;
-
 	//---------CLEAR()-------------
-	std::cout << YELLOW << ".clear() testing" << RESET << std::endl;
 	
 	VECTOR<char> vecl;
 
@@ -700,10 +645,8 @@ void	test_modifiers(std::ofstream& ofs)
 		break;
 	}
 	printVector(vecl2, ofs);
-	std::cout << GREEN << ".clear() ok" << RESET << std::endl;
 	
 	//-------------SWAP()----------------
-	std::cout << YELLOW << ".swap() testing" << RESET << std::endl;
 
 	VECTOR<std::string>	vecStr(4, "hola");
 	VECTOR<std::string>	vecStr2(7, "hi");
@@ -735,10 +678,7 @@ void	test_modifiers(std::ofstream& ofs)
 			std::cout << RED << "error swap(): values are the same as before" << RESET << std::endl;
 	}
 
-	std::cout << GREEN << ".swap() ok" << RESET << std::endl;
-
 	//--------------INSERT()---------------
-	std::cout << YELLOW << ".insert() testing" << RESET << std::endl;
 	
 	//insert(pos, value)
 	VECTOR<int> vecTst(3, 100);
@@ -775,32 +715,16 @@ void	test_modifiers(std::ofstream& ofs)
 		std::cout << RED << "error insert(): invalid values in container" << RESET << std::endl;
 	if (vecTst2.size() != 8)
 	std::cout << RED << "error insert(): invalid size after call function" << RESET << std::endl;
-
-	std::cout << GREEN << ".insert() ok" << RESET << std::endl;
 }
 
-int	main()
+int	test_vector(std::ofstream& file)
 {
-	std::ofstream file;
-	file.open("log");
-	std::cout << "\e[1;45m----------CONSTRUCTORS-TEST------:" << RESET << std::endl;
-	//sleep(1);
+	file << "\e[107m\e[1;30m" << "=============VECTOR TEST===============" << RESET << std::endl;
 	test_constructors(file);
-	//sleep(1);
-	std::cout << "\e[1;45m----------ITERATORS----TEST------:" << RESET << std::endl;
-	//sleep(1);
 	test_iterators(file);
-//	sleep(1);
-	std::cout << "\e[1;45m----------CAPACITY-----TEST------:" << RESET << std::endl;
-//	sleep(1);
 	test_capacity();
-//	sleep(1);
-	std::cout << "\e[1;45m-------ELEMENTS_ACCESS-TEST------:" << RESET << std::endl;
-//	sleep(1);
 	test_access(file);
-//	sleep(1);
-	std::cout << "\e[1;45m----------MODIFIERS----TEST------:" << RESET << std::endl;
-//	sleep(1);
 	test_modifiers(file);
+	file << "\e[107m\e[1;30m" << "=============END VECTOR TEST===========" << RESET << std::endl;
 	return (0);	
 }
