@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 10:28:15 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/15 14:36:30 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/01 15:58:15 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,8 @@ class stack
 	typedef typename Container::const_reference	const_reference;
 	typedef Container							container_type;
 
-	stack (const container_type& ctnr = container_type()) : c(ctnr) {}
+	explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {}
 
-	~stack() {}
-	
 	bool	empty() const { return (c.empty()); }
 
 	size_type size() const { return (c.size()); }
@@ -40,6 +38,8 @@ class stack
 	void	pop() { c.pop_back(); }
 
 	reference	top() { return c.back(); }
+	
+	const reference	top() const { return c.back(); }
 	
 	friend bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
 		return (lhs.c == rhs.c);

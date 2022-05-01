@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/19 13:59:43 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/01 16:24:09 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,43 +49,48 @@ class	vector
 		
 		~vector()
 		{
+			if (this->_data == NULL)
+				return;
+
 			this->clear();
 			this->_alloc.deallocate(this->_data, this->_capacity);
-			this->_capacity = 0;
 		}
 		
 		//CONSTRUCTORS
 		
 		explicit	vector(const allocator_type& alloc = allocator_type()) : 
-		_alloc(alloc), _data(0), _size(0), _capacity(0) {}
+		_alloc(alloc), _data(NULL), _size(0), _capacity(0) {}
 
-		vector(size_type n, const value_type& val = value_type(),
+		explicit vector(size_type n, const value_type& val = value_type(),
 		const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(n), _capacity(n)
 		{
-			_data = _alloc.allocate(_capacity);
+			this->_data = this->_alloc.allocate(this->_capacity);
 			for (size_type i = 0; i < n; i++)
-				_alloc.construct(_data + i, val);
+				this->_alloc.construct(_data + i, val);
 		}
 
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
 		typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NullPtr) : _alloc(alloc), _size(0)
 		{
-			_capacity = ft::distance(first, last);
-			_size = _capacity;
-			_data = _alloc.allocate(_size);
+			this->_capacity = ft::distance(first, last);
+			this->_size = this->_capacity;
+			this->_data = this->_alloc.allocate(_size);
 			for (size_type i = 0; first != last; i++)
 			{
-				_alloc.construct(_data + i, *first);
+				this->_alloc.construct(_data + i, *first);
 				first++;
 			}
 		}
 		
 		vector(const vector& x) : _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
 		{
+			if (this->_capacity == 0)
+				return;
+
 			this->_data = this->_alloc.allocate(this->_capacity);
 			for (size_type i = 0; i < this->_size; i++)
-				this->_alloc.construct(_data + i, *(x._data + i));
+				this->_alloc.construct(_data + i, x[i]);
 		}
 
 		vector& operator=(const vector& src)
@@ -94,6 +99,13 @@ class	vector
 				return (*this);
 
 			this->clear();
+			if (src.size() > this->_capacity)
+			{
+				this->_alloc.deallocate(this->_data, this->_capacity);
+				this->_capacity = src.size();
+				this->_data = this->_alloc.allocate(this->_capacity);
+			}
+
 			for (size_type i = 0; i < src.size(); i++)
 				this->push_back(src[i]);
 
@@ -109,10 +121,11 @@ class	vector
 				return;
 			if (this->_capacity < n)
 			{
-				this->_alloc.deallocate(this->_data, this->_capacity);
-				this->_data = this->_alloc.allocate(n);
+				this->reserve(n);
 				this->_capacity = n;
 			}
+			for (size_type i = 0; i < n; i++)
+				this->_alloc.destroy(this->_data + i);
 			this->_size = 0;
 			for (size_type i = 0; i < n; i++)
 			{
@@ -126,13 +139,13 @@ class	vector
 		typename ft::enable_if<!ft::is_integral<Iterator>::value, Iterator>::type* = NullPtr)
 		{
 			size_type n = ft::distance(first, last);
-			this->clear();
 			if (this->_capacity < n)
 			{
-				delete this->_data;
-				this->_data = this->_alloc.allocate(n);
+				this->reserve(n);
 				this->_capacity = n;
 			}
+			for (size_type i = 0; i < n; i++)
+				this->_alloc.destroy(this->_data + i);
 			this->_size = 0;
 			for (size_type i = 0; first != last; i++)
 			{
@@ -342,16 +355,16 @@ class	vector
 
 			else if (n > this->_capacity)
 			{
-				pointer tmp = this->_data;
-				iterator it = this->begin();
-				iterator ite = this->end();
-				size_type oldCapacity = this->_capacity;
-				
+				pointer	newVec = this->_alloc.allocate(n);
+
+				for (size_type i = 0; i < this->_size; i++)
+				{
+					this->_alloc.construct(newVec + i, this->_data[i]);
+					this->_alloc.destroy(this->_data + i);
+				}
+				this->_alloc.deallocate(this->_data, this->_capacity);
 				this->_capacity = n;
-				this->_data = this->_alloc.allocate(this->_capacity);
-				assign(it, ite);
-				
-				this->_alloc.deallocate(tmp, oldCapacity);
+				this->_data = newVec;
 			}
 		}
 
