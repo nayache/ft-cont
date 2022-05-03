@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   enable_if.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/29 16:34:05 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/03 16:23:59 by nayache          ###   ########.fr       */
+/*   Created: 2021/12/20 14:14:51 by nayache           #+#    #+#             */
+/*   Updated: 2021/12/22 13:12:35 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "test_vector.cpp"
-#include "test_stack.cpp"
-#include "test_map.cpp"
-#include "test.hpp"
+#ifndef ENABLE_IF_HPP
+# define ENABLE_IF_HPP
 
-int	main(void)
+
+namespace ft {
+
+template <bool B, class T = void>
+struct	enable_if {};
+
+
+template <class T>
+struct	enable_if<true, T>
 {
-	std::ofstream out;
-	out.open("log");
+	typedef T	type;
+};
 
-	test_stack();
-	test_vector(out);
-	test_map(out);
-	return 0;	
+
 }
+#endif

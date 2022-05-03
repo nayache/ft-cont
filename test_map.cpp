@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 14:20:55 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/01 16:33:44 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/03 16:20:13 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define TEST_MAP_HPP
 
 # include <map>
-# include "includes/containers/map.hpp"
-# include "includes/test.hpp"
-# include "includes/lexicographical.hpp"
+# include "map.hpp"
+# include "test.hpp"
+# include "lexicographical.hpp"
 # include <cassert>
 # include <fstream>
 

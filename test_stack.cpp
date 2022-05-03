@@ -6,11 +6,11 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 14:51:12 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/29 17:35:17 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/03 16:20:20 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/containers/stack.hpp"
+#include "stack.hpp"
 #include "test.hpp"
 #include <stack>
 #include <cassert>
