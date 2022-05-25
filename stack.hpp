@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 10:28:15 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/01 15:58:15 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/20 17:03:08 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class stack
 
 	reference	top() { return c.back(); }
 	
-	const reference	top() const { return c.back(); }
+	const_reference	top() const { return c.back(); }
 	
 	friend bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
 		return (lhs.c == rhs.c);

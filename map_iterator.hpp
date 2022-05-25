@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 15:22:22 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/03 11:42:21 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/20 17:00:56 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,17 @@ class MapIterator
 	typedef N													node_type;
 	typedef N*													node_pointer;
 	typedef	std::bidirectional_iterator_tag						iterator_category;
-	typedef const ft::BinarySearchTree<key_type, mapped_type, Compare>	tree_type;
+	typedef ft::BinarySearchTree<key_type, mapped_type, Compare>	tree_type;
 
 	MapIterator(const key_compare& comp = key_compare()) : _ptr(NULL), _comp(comp) {}
-	MapIterator(node_pointer addr, tree_type* main, const key_compare& comp = key_compare())
-	: _ptr(addr), _main(main), _comp(comp) {}
+	MapIterator(node_pointer addr, node_pointer root, node_pointer end, const key_compare& comp = key_compare())
+	: _ptr(addr), _end(end), _root(root), _comp(comp)
+	{
+	}
 	
 	template<class U>
 	MapIterator(const MapIterator<U, N, Compare>& src, typename ft::enable_if<!ft::is_const<U>::value, U>::type* = NullPtr)
-	: _ptr(src.getPtr()), _main(src.getMain())
+	: _ptr(src.getPtr()), _end(src.getEnd()), _root(src.getRoot())
 	{
 		this->_comp = key_compare();
 	}
@@ -53,7 +55,8 @@ class MapIterator
 	MapIterator&	operator=(const MapIterator& src)
 	{
 		this->_ptr = src.getPtr();
-		this->_main = src.getMain();
+		this->_end = src._end;
+		this->_root = src._root;
 		this->_comp = src._comp;
 		return (*this);
 	}
@@ -100,14 +103,16 @@ class MapIterator
 	}
 
 	node_pointer	getPtr() const { return (this->_ptr); }
-	tree_type*	getMain() const { return (this->_main); }
+	node_pointer	getEnd() const { return (this->_end); }
+	node_pointer	getRoot() const { return (this->_root); }
 
 	//-----attributes--------
 
 	private:
 
 	node_pointer	_ptr;
-	tree_type*		_main;
+	node_pointer	_end;
+	node_pointer	_root;
 	key_compare		_comp;
 	
 	//----------------------
@@ -123,13 +128,21 @@ class MapIterator
             return (true);
         return (false);
     }	
+	
+	node_pointer maxNode()
+	{
+		node_pointer tmp = this->_root;
+		while (tmp->_right != NULL)
+			tmp = tmp->_right;
+		return (tmp);
+	}
 
 	void	next()
 	{
 		if (this->_ptr == NULL)
 			return;
 		
-		if (this->_ptr == this->_main->_end)
+		if (this->_ptr == this->_end)
 			return;
 
 		key_type key = this->_ptr->_pair.first;
@@ -145,8 +158,9 @@ class MapIterator
 				
 				this->_ptr = this->_ptr->_parent;
 			}
+			
 			if (this->_ptr == NULL)
-				this->_ptr = this->_main->_end;
+				this->_ptr = this->_end;
 		}
 		else
 		{
@@ -161,9 +175,9 @@ class MapIterator
 		if (this->_ptr == NULL)
 			return;
 		
-		if (this->_ptr == this->_main->_end)
+		if (this->_ptr == this->_end)
 		{
-			this->_ptr = this->_main->findMax();
+			this->_ptr = this->maxNode();
 			return;	
 		}
 		

@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 14:20:55 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/03 16:20:13 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/20 15:26:35 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ void	tst_constructors(std::ofstream& ofs)
 	first['x'] = 40;
 	first['y'] = 400;
 	first['z'] = 4000;
+
+	printAttributes(first, ofs); // asup
 
 	second = first;
 	first = MAP<char, int>();
@@ -200,7 +202,7 @@ void	tst_capacity(std::ofstream& ofs)
 	assert(emp.empty() == true);	
 
 //-----------------Size------------------
-
+	
 	MAP<short, char> smap;
 
 	assert(smap.size() == 0);

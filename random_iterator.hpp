@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 10:00:41 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/03 11:42:32 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/20 18:41:25 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ class	RandomIterator
 
 	template <typename U> 
 	RandomIterator(const RandomIterator<U>& src) : _p(src.base()) {}
+	
+	RandomIterator(const RandomIterator& src) : _p(src.base()) {}
 
 	RandomIterator&	operator=(const RandomIterator& rhs)
 	{
@@ -43,7 +45,7 @@ class	RandomIterator
 		return (*this);
 	}
 
-	reference	operator*(void) {return (*(this->_p));}
+	reference	operator*(void) const {return (*(this->_p));}
 
 	pointer	operator->(void) { return &(this->operator*()); }
 

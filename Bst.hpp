@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/22 13:55:17 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/25 15:43:24 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <memory>
 # include <functional>
 # include <algorithm>
-# include <unistd.h> //a supppppppppp
+# include "utils.hpp"
 
 namespace ft {
 template <class K, class V>
@@ -97,27 +97,20 @@ class BinarySearchTree
 
 	BinarySearchTree&	operator=(const BinarySearchTree& src)
 	{
-		this->_alloc = src._alloc;
-		this->_comp = src._comp;
 		this->_root = src._root;
 		this->_end = src._end;
+		this->_alloc = src._alloc;
+		this->_comp = src._comp;
 
 		return (*this);
 	}
 	
 	void	swap(BinarySearchTree& x)
 	{
-		node_pointer	tmp = this->_root;
-		node_pointer	tmp2 = this->_end;
-		alloc_type		tmp3 = this->_alloc;
-
-		this->_root = x._root;
-		this->_end = x._end;
-		this->_alloc = x._alloc;
-
-		x._root = tmp;
-		x._end = tmp2;
-		x._alloc = tmp3;
+		ft::swapp(this->_root, x._root);
+		ft::swapp(this->_end, x._end);
+		ft::swapp(this->_alloc, x._alloc);
+		ft::swapp(this->_comp, x._comp);
 	}
 
 	node_pointer	createNode(node_pointer parent, pair_type pair)
@@ -131,19 +124,19 @@ class BinarySearchTree
 		return (newNode);
 	}
 	
-	void	removeNode(node_pointer parent, node_pointer curr, key_type key)
+	void removeNode(node_pointer parent, node_pointer curr, key_type k)
 	{
 		if (curr == NULL)
 			return;
 
-		if (curr->_pair.first == key)
+		if (this->equal(curr->_pair.first, k))
 		{
 			if (curr->_left == NULL && curr->_right == NULL)
 			{
-				if (parent != NULL && parent->_pair.first == curr->_pair.first)
+				if (curr == this->_root)
 				{
-					this->_alloc.destroy(this->_root);
-					this->_alloc.deallocate(this->_root, 1);
+					this->_alloc.destroy(curr);
+					this->_alloc.deallocate(curr, 1);
 					this->_root = NULL;
 					return;
 				}
@@ -151,46 +144,140 @@ class BinarySearchTree
 					parent->_right = NULL;
 				else
 					parent->_left = NULL;
+				
 				this->_alloc.destroy(curr);
 				this->_alloc.deallocate(curr, 1);
 				rebalancer(parent);
 			}
 			else if (curr->_left != NULL && curr->_right == NULL)
 			{
-				pair_type tmp = curr->_pair;
-				curr->_pair = curr->_left->_pair;
-				curr->_left->_pair = tmp;
-				removeNode(curr, curr->_left, key);
+				swapLeft(curr, curr->_left);
+				removeNode(curr->_parent, curr, k);
 			}
 			else if (curr->_left == NULL && curr->_right != NULL)
 			{
-				pair_type tmp = curr->_pair;
-				curr->_pair = curr->_right->_pair;
-				curr->_right->_pair = tmp;
-				removeNode(curr, curr->_right, key);
+				swapRight(curr, curr->_right);
+				removeNode(curr->_parent, curr, k);
 			}
 			else
 			{
 				node_pointer tmp = curr->_right;
 				int flag = 0;
-
 				while (tmp->_left)
 				{
 					flag = 1;
 					parent = tmp;
 					tmp = tmp->_left;
 				}
-				if (!flag)
-					parent = curr;
+				if (flag == 0)
+					swapRight(curr, tmp);
+				else
+					swapNodes(curr, tmp);
 				
-				pair_type tmpPair = curr->_pair;
-				curr->_pair = tmp->_pair;
-				tmp->_pair = tmpPair;
-				removeNode(parent, tmp, tmp->_pair.first);
+				removeNode(curr->_parent, curr, k);
 			}
 		}
+
 	}
 	
+	void	swapRight(node_pointer a, node_pointer b)
+	{
+		node_pointer tmp_parent = a->_parent;
+		node_pointer tmp_left = a->_left;
+		int tmp_height = a->_height;
+
+		a->_parent = b;
+		a->_left = b->_left;
+		if (a->_left)
+			a->_left->_parent = a;
+		a->_right = b->_right;
+		if (a->_right)
+			a->_right->_parent = a;
+		a->_height = b->_height;
+
+		if (tmp_parent && tmp_parent->_right == a)
+			tmp_parent->_right = b;
+		else if (tmp_parent && tmp_parent->_left == a)
+			tmp_parent->_left = b;
+
+		b->_parent = tmp_parent;
+		b->_right = a;
+		b->_left = tmp_left;
+		if (b->_left)
+			b->_left->_parent = b;
+		b->_height = tmp_height;
+		if (this->_root == a)
+			this->_root = b;
+	}
+
+	void	swapLeft(node_pointer a, node_pointer b)
+	{
+		node_pointer tmp_parent = a->_parent;
+		node_pointer tmp_right = a->_right;
+		int tmp_height = a->_height;
+
+		a->_parent = b;
+		a->_left = b->_left;
+		if (a->_left)
+			a->_left->_parent = a;
+		a->_right = b->_right;
+		if (a->_right)
+			a->_right->_parent = a;
+		a->_height = b->_height;
+
+		if (tmp_parent && tmp_parent->_right == a)
+			tmp_parent->_right = b;
+		else if (tmp_parent && tmp_parent->_left == a)
+			tmp_parent->_left = b;
+
+		b->_parent = tmp_parent;
+		b->_right = tmp_right;
+		if (b->_right)
+			b->_right->_parent = b;
+		b->_left = a;
+		b->_height = tmp_height;
+		if (this->_root == a)
+			this->_root = b;
+	}
+	
+	void	swapNodes(node_pointer a, node_pointer b)
+	{
+		node_pointer tmp_parent = a->_parent;
+		node_pointer tmp_right = a->_right;
+		node_pointer tmp_left = a->_left;
+		int tmp_height = a->_height;
+		
+		if (b->_parent && b->_parent->_right == b)
+			b->_parent->_right = a;
+		else if (b->_parent && b->_parent->_left == b)
+			b->_parent->_left = a;
+
+		a->_parent = b->_parent;
+		a->_left = b->_left;
+		if (a->_left)
+			a->_left->_parent = a;
+		a->_right = b->_right;
+		if (a->_right)
+			a->_right->_parent = a;
+		a->_height = b->_height;
+		
+		if (tmp_parent && tmp_parent->_right == a)
+			tmp_parent->_right = b;
+		else if (tmp_parent && tmp_parent->_left == a)
+			tmp_parent->_left = b;
+		
+		b->_parent = tmp_parent;
+		b->_right = tmp_right;
+		if (b->_right)
+			b->_right->_parent = b;
+		b->_left = tmp_left;
+		if (b->_left)
+			b->_left->_parent = b;
+		b->_height = tmp_height;
+		if (this->_root == a)
+			this->_root = b;
+	}
+
 	void	remove(key_type key)
 	{
 		node_pointer	tmp = this->_root;
@@ -201,7 +288,7 @@ class BinarySearchTree
 			removeNode(NULL, NULL, key);
 		while (tmp)
 		{
-			if (key == tmp->_pair.first)
+			if (equal(key, tmp->_pair.first))
 			{
 				flag = true;
 				removeNode(parent, tmp, key);
@@ -210,7 +297,7 @@ class BinarySearchTree
 			else
 			{
 				parent = tmp;
-				if (key < tmp->_pair.first)
+				if (this->_comp(key, tmp->_pair.first))
 					tmp = tmp->_left;
 				else
 					tmp = tmp->_right;
@@ -290,14 +377,14 @@ class BinarySearchTree
 		if (balanceFactor(tmp) == 2)
 		{
 			if (balanceFactor(tmp->_right) < 0)
-				rightRotate(tmp->_right);
+				RightLeftRotate(tmp);
 			leftRotate(tmp);
 			heightBalance(tmp);
 		}
 		else if (balanceFactor(tmp) == -2)
 		{
 			if (balanceFactor(tmp->_left) > 0)
-				leftRotate(tmp->_left);
+				LeftRightRotate(tmp);
 			rightRotate(tmp);
 			heightBalance(tmp);
 		}
@@ -319,86 +406,128 @@ class BinarySearchTree
 		}
 	}
 	
-	void	leftRotate(node_pointer x)
+	void LeftRightRotate(node_pointer x)
 	{
-		node_pointer newNode = createNode(NULL, x->_pair);
-		node_pointer tmp = x->_right;
+		node_pointer tmp = x->_left;
+		node_pointer tmp2 = x->_left->_right;
 
-		if (x->_right && x->_right->_left)
-			newNode->_right = x->_right->_left;
-		newNode->_left = x->_left;
-		x->_pair = x->_right->_pair;
-
-		x->_left = newNode;
-		if (newNode->_left)
-			newNode->_left->_parent = newNode;
-		if (newNode->_right)
-			newNode->_right->_parent = newNode;
-		newNode->_parent = x;
-
-		if (x->_right->_right)
-			x->_right = x->_right->_right;
+		tmp->_parent = tmp2;
+		tmp2->_parent = x;
+		
+		if (tmp2->_left)
+		{
+			tmp->_right = tmp2->_left;
+			tmp->_right->_parent = tmp;
+		}
 		else
-			x->_right = NULL;
-
-		if (x->_right)
-			x->_right->_parent = x;
+			tmp->_right = NULL;
+		
+		x->_left = tmp2;
+		
+		tmp2->_left = tmp;
 
 		heightBalance(x->_left);
 		if (x->_right)
 			heightBalance(x->_right);
 		heightBalance(x);
-		
-		if (x != NULL && x->_left != NULL && this->_comp(x->_pair.first, x->_left->_pair.first))
-			swapNode(x, x->_left);
-
-		this->_alloc.destroy(tmp);
-		this->_alloc.deallocate(tmp, 1);
-	}
-	
-	void	swapNode(node_pointer a, node_pointer b)
-	{
-		pair_type c = a->_pair;
-
-		a->_pair = b->_pair;
-		b->_pair = c;
 	}
 
-	void	rightRotate(node_pointer x)
+	void RightLeftRotate(node_pointer x)
 	{
-		node_pointer newNode = createNode(NULL, x->_pair);
-		node_pointer tmp = x->_left;
+		node_pointer tmp = x->_right;
+		node_pointer tmp2 = x->_right->_left;
+
+		tmp->_parent = tmp2;
+		tmp2->_parent = x;
 		
-		if (x->_left && x->_left->_right)
-			newNode->_left = x->_left->_right;
-		newNode->_right = x->_right;
-		x->_pair = x->_left->_pair;
-
-		x->_right = newNode;
-		if (newNode->_left)
-			newNode->_left->_parent = newNode;
-		if (newNode->_right)
-			newNode->_right->_parent = newNode;
-		newNode->_parent = x;
-
-		if (x->_left->_left)
-			x->_left = x->_left->_left;
+		if (tmp2->_right)
+		{
+			tmp->_left = tmp2->_right;
+			tmp->_left->_parent = tmp;
+		}
 		else
-			x->_left = NULL;
-
-		if (x->_left)
-			x->_left->_parent = x;
+			tmp->_left = NULL;
+		
+		x->_right = tmp2;
+		
+		tmp2->_right = tmp;
 
 		heightBalance(x->_right);
 		if (x->_left)
 			heightBalance(x->_left);
 		heightBalance(x);
+	}
+
+	void	leftRotate(node_pointer x)
+	{
+		if (this->_comp(x->_right->_pair.first, x->_pair.first))
+			swapRight(x, x->_right);
+
+		node_pointer newRoot = x->_right;
+		node_pointer parent = x->_parent;
+
+		x->_parent = newRoot;
+
+		newRoot->_parent = parent;
+
+		if (x->_right && x->_right->_left)
+			x->_right = x->_right->_left;
+		else
+			x->_right = NULL;
+
+		newRoot->_left = x;
+
+		if (parent && parent->_right == x)
+			parent->_right = newRoot;
+		else if (parent && parent->_left == x)
+			parent->_left = newRoot;
+
+		if (x->_right)
+			x->_right->_parent = x;
+
+		if (parent == NULL)
+			this->_root = newRoot;
 		
-		if (x != NULL && x->_left != NULL && this->_comp(x->_pair.first, x->_left->_pair.first))
-			swapNode(x, x->_left);
+		heightBalance(newRoot->_left);
+		if (newRoot->_right)
+			heightBalance(newRoot->_right);
+		heightBalance(newRoot);
+	}
 	
-		this->_alloc.destroy(tmp);
-		this->_alloc.deallocate(tmp, 1);
+	void	rightRotate(node_pointer x)
+	{
+		if (this->upper(x->_left->_pair.first, x->_pair.first))
+			swapLeft(x, x->_left);
+
+		node_pointer newRoot = x->_left;
+		node_pointer parent = x->_parent;
+
+		x->_parent = newRoot;
+
+		newRoot->_parent = parent;
+
+		if (x->_left && x->_left->_right)
+			x->_left = x->_left->_right;
+		else
+			x->_left = NULL;
+
+		newRoot->_right = x;
+
+		if (parent && parent->_right == x)
+			parent->_right = newRoot;
+		else if (parent && parent->_left == x)
+			parent->_left = newRoot;
+
+		if (x->_left)
+			x->_left->_parent = x;
+
+		if (parent == NULL)
+			this->_root = newRoot;
+		
+		heightBalance(newRoot->_right);
+		if (newRoot->_left)
+			heightBalance(newRoot->_left);
+		heightBalance(newRoot);
 	}
 
 	node_pointer	findMin() const
@@ -423,6 +552,13 @@ class BinarySearchTree
 		while (tmp->_right != NULL)
 			tmp = tmp->_right;
 		return (tmp);
+	}
+
+	node_pointer	findMax(node_pointer root) const
+	{
+		while (root->_right != NULL)
+			root = root->_right;
+		return (root);
 	}
 
 	//--------------attributes----------
@@ -465,6 +601,8 @@ class BinarySearchTree
 
 	node_pointer	searchByKey(node_pointer Bst, key_type key) const
 	{
+		if (Bst == NULL)
+			return (NULL);
 		if (key == Bst->_pair.first)
 			return (Bst);
 		
@@ -532,7 +670,10 @@ class BinarySearchTree
     	std::cout << std::endl;
     	for (int i = 2; i < space; i++)
         	std::cout << " ";
-    	std::cout << root->_pair.first <<"\n";
+    	std::cout << root->_pair.first;
+		if (root->_parent)
+			std::cout << "(" << root->_parent->_pair.first << ")";
+		std::cout << std::endl;
  
 		if (root->_left != NULL)
     		print2(root->_left, space);

@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/03 16:23:42 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/25 15:42:48 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ class	vector
 			}
 		}
 		
-		vector(const vector& x) : _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
+		vector(const vector& x) : _alloc(x._alloc), _size(x._size), _capacity(x._size)
 		{
 			if (this->_capacity == 0)
 				return;
@@ -117,7 +117,12 @@ class	vector
 		void	assign(size_type n, const value_type& val)
 		{
 			if (this->_capacity < n)
-				this->reserve(n);
+			{
+				if (this->_size * 2 >= n)
+					this->reserve(this->_size * 2);
+				else
+					this->reserve(n);
+			}
 			
 			for (size_type i = 0; i < this->_size; i++)
 				this->_alloc.destroy(this->_data + i);
@@ -135,7 +140,12 @@ class	vector
 			size_type n = ft::distance(first, last);
 
 			if (this->_capacity < n)
-				this->reserve(n);
+			{
+				if (this->_size * 2 >= n)
+					this->reserve(this->_size * 2);
+				else
+					this->reserve(n);
+			}
 			
 			for (size_type i = 0; i < this->_size; i++)
 				this->_alloc.destroy(this->_data + i);
@@ -150,15 +160,15 @@ class	vector
 		}		
 		void	push_back(const value_type& val)
 		{
-			if (this->_capacity == this->_size)
+			if (this->_size + 1 > this->_capacity)
 			{
-				if (this->_capacity == 0)
+				if (this->_size == 0)
 				{
 					this->_data = this->_alloc.allocate(1);
 					this->_capacity = 1;
 				}
 				else
-					this->reserve(this->_capacity * 2);
+					this->reserve(this->_size * 2);
 			}
 			this->_alloc.construct(this->_data + this->_size, val);
 			this->_size++;
@@ -219,14 +229,16 @@ class	vector
 				else
 					this->reserve(this->_size * 2);
 			}
-			for (size_type index = this->_size - 1 + n; index > this->_size - 1; index--)
-				this->_alloc.construct(this->_data + index, this->_data[index - n]);
-
-			for (int index = static_cast<int>(this->_size) - 1; index - static_cast<int>(n) >= 0 && index - static_cast<int>(n) >= static_cast<int>(start); index--)
-				this->_data[index] = this->_data[index - n];
-			for (size_type i = 0; i < n ; i++)
-				this->_data[start + i] = val;
 			
+			for (size_type i = 0; i < n; i++)
+				this->_alloc.construct(this->_data + this->_size + i, val);
+			
+			for (int i = this->_size - 1; i >= 0 && i >= static_cast<int>(start); i--)
+				this->_data[i + n] = this->_data[i];
+			
+			for (size_type i = start; i < start + n; i++)
+				this->_data[i] = val;
+
 			this->_size += n;	
 		}
 
@@ -327,7 +339,12 @@ class	vector
 			if (n > this->_size)
 			{
 				if (n > this->_capacity)
-					this->reserve(n);
+				{
+					if (this->_size * 2 >= n)
+						this->reserve(this->_size * 2);
+					else
+						this->reserve(n);
+				}
 				for (size_type count = n - this->_size; i < count; i++)
 					this->push_back(val);
 			}
@@ -347,8 +364,8 @@ class	vector
 			else if (n > this->_capacity)
 			{
 				pointer	newVec = this->_alloc.allocate(n);
-
-				for (size_type i = 0; i < this->_size; i++)
+				
+				for (size_type i = 0; i < this->_size && i < n; i++)
 				{
 					this->_alloc.construct(newVec + i, this->_data[i]);
 					this->_alloc.destroy(this->_data + i);

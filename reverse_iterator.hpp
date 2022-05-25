@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 07:33:26 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/21 11:16:33 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/20 18:42:29 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ class	ReverseIterator
 	
 	template <class U>
 	ReverseIterator(const ReverseIterator<U>& rev_it) : current(rev_it.base()) {};
+	
+	ReverseIterator(const ReverseIterator& rev_it) : current(rev_it.base()) {};
 
 	ReverseIterator& operator=(const ReverseIterator& other)
 	{

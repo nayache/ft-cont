@@ -6,7 +6,7 @@
 /*   By: nayache <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/22 15:31:27 by nayache           #+#    #+#             */
-/*   Updated: 2022/04/20 11:18:02 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/20 18:48:33 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ struct pair
 
 	template <class U, class V>
 	pair(const pair<U,V>& pr) : first(pr.first), second(pr.second) {}
+	
+	pair(const pair& pr) : first(pr.first), second(pr.second) {}
 
 	pair(const first_type& a, const second_type& b) : first(a), second(b) {}
 

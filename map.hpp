@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/03 11:43:27 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/25 15:43:09 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,9 @@ class	map
 	};
 //---------------------------CONSTRUCTORS--------------------------------------/
 	
-	map(const key_compare& comp = key_compare(), const alloc_type& alloc = alloc_type()) : _alloc(alloc), _comp(comp), _tree(tree_type())
-	{}
+	map(const key_compare& comp = key_compare(), const alloc_type& alloc = alloc_type()) : _alloc(alloc), _comp(comp)
+	{
+	}
 	
 	template <class InputIterator>
 	map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(),
@@ -105,61 +106,36 @@ class	map
 		if (this->_tree._root == NULL)
 		{
 			this->_tree._root = this->_tree.createNode(NULL, val);
-			return (ft::make_pair(iterator(this->_tree._root, &(this->_tree)), true));
+			return (ft::make_pair(iterator(this->_tree._root, this->_tree._root, this->_tree._end), true));
 		}
 		node_type*	newNode = this->_tree.searchByKey(this->_tree._root, val.first);
 		
 		if (newNode != NULL)	
-			return (ft::make_pair(iterator(newNode, &(this->_tree)), false));
+			return (ft::make_pair(iterator(newNode, this->_tree._root, this->_tree._end), false));
 		
 		newNode = this->_tree.insertNode(this->_tree._root, val);
 		
-		return (ft::make_pair(iterator(newNode, &(this->_tree)), true));
+		return (ft::make_pair(iterator(newNode, this->_tree._root, this->_tree._end), true));
 	}
 
 	iterator	insert(iterator position, const value_type& val)
 	{
 		node_type*	ret;
-		
-		if (position.getPtr() == this->_tree._end)
+		static_cast<void>(position);
+
+		if (this->_tree._root == NULL)
 		{
-			if (this->size() == 0)
-			{
-				this->insert(val);
-				ret = this->_tree._root;
-			}
-			else
-				ret = this->_tree.insertNode(this->_tree._root, val);
-			return (iterator(ret, &(this->_tree)));
-		}
-		if (position.getPtr() != NULL && this->_comp(val.first, position->first))
-		{
-			while (position.getPtr() != NULL && this->_comp(val.first, position->first))
-				--position;
+			this->_tree._root = this->_tree.createNode(NULL, val);
+			ret = this->_tree._root;
 		}
 		else
 		{
-			if (position.getPtr() != NULL)
-				while (position.getPtr() != this->_tree._end && upper(val.first, position->first))
-					++position;
-		}
-		if (position.getPtr() != NULL && position != this->end() && position->first == val.first)
-			return (iterator(position.getPtr(), &(this->_tree)));
-		
-		if (position.getPtr() != NULL && position != this->end())	
-			ret = this->_tree.insertNode(position.getPtr(), val);
-		else
-		{
-			if (this->_tree._root == NULL)
-			{
-				this->_tree._root = this->_tree.createNode(NULL, val);
-				ret = this->_tree._root;
-			}
-			else
-				ret = this->_tree.insertNode(this->_tree._root, val);
-		}
+			if ((ret = this->_tree.searchByKey(this->_tree._root, val.first)) != NULL)
+				return (iterator(ret, this->_tree._root, this->_tree._end));
 			
-		return (iterator(ret, &(this->_tree)));
+			ret = this->_tree.insertNode(this->_tree._root, val);	
+		}
+		return (iterator(ret, this->_tree._root, this->_tree._end));
 	}
 	
 	template <class InputIterator>
@@ -187,27 +163,8 @@ class	map
 	
 	void	erase(iterator first, iterator last)
 	{
-		if (first == last)
-			return;
-		
-		key_type b = first->first;
-		key_type e = (--last)->first;
-		
-		iterator tmp = this->begin();
-		
-		while (tmp->first != e)
-		{
-			while (tmp->first < b)
-				tmp++;
-			
-			if (tmp->first >= e)
-				break;	
-			
-			this->erase(tmp);
-			tmp = this->begin();
-		}
-		if (tmp->first == e)
-			this->erase(tmp);
+		while (first != last)
+			this->erase(first++);
 	}
 	
 	void	swap(map& x)
@@ -225,12 +182,12 @@ class	map
 
 //----------------------------ITERATORS---------------------------------------//
 
-	iterator				begin() { return (iterator(this->_tree.findMin(), &(this->_tree))); }
-	const_iterator			begin() const { return (const_iterator(this->_tree.findMin(), &(this->_tree))); }
-	iterator				end() { return (iterator(this->_tree._end, &(this->_tree))); }
-	const_iterator			end() const { return (const_iterator(this->_tree._end, &(this->_tree))); }
+	iterator				begin() { return (iterator(this->_tree.findMin(), this->_tree._root, this->_tree._end)); }
+	const_iterator			begin() const { return (const_iterator(this->_tree.findMin(), this->_tree._root, this->_tree._end)); }
+	iterator				end() { return (iterator(this->_tree._end, this->_tree._root, this->_tree._end)); }
+	const_iterator			end() const { return (const_iterator(this->_tree._end, this->_tree._root, this->_tree._end)); }
 	reverse_iterator		rbegin() { return (reverse_iterator(this->end())); }
-	const_reverse_iterator	rbegin() const { return (const_reverse_iterator(this->rbegin())); }
+	const_reverse_iterator	rbegin() const { return (const_reverse_iterator(this->end())); }
 	reverse_iterator		rend() { return (reverse_iterator(this->begin())); }
 	const_reverse_iterator	rend() const { return (const_reverse_iterator(this->begin())); }
 //---------------------------OBSERVERS---------------------------------------//
@@ -257,7 +214,7 @@ value_compare value_comp() const
 		if (finder == NULL)
 			return (this->end());
 
-		return (iterator(finder, &(this->_tree)));
+		return (iterator(finder, this->_tree._root, this->_tree._end));
 	}
 
 	const_iterator	find(const key_type& k) const
@@ -270,7 +227,7 @@ value_compare value_comp() const
 		if (finder == NULL)
 			return (this->end());
 
-		return (const_iterator(finder, &(this->_tree)));
+		return (const_iterator(finder, this->_tree._root, this->_tree._end));
 	}
 
 	size_type	count(const key_type& k) const
@@ -355,7 +312,7 @@ value_compare value_comp() const
 	{
 		if (this->_tree._root == NULL)
 			this->insert(ft::make_pair(k, mapped_type()));
-		
+	
 		iterator	ret = this->find(k);
 		
 		if (ret == this->end())
@@ -381,8 +338,12 @@ value_compare value_comp() const
 			return (true);
 		return (false);
 	}
-
-
+	
+	void print()
+	{
+    	print2(this->_tree._root, 0);
+	}
+	
 	void print2(node_type* root, int space)
 	{
     	if (root == NULL)
@@ -404,10 +365,6 @@ value_compare value_comp() const
     		print2(root->_left, space);
 	}
  
-	void print()
-	{
-    	print2(this->_tree._root, 0);
-	}
 //---------------------------------------
 
 	alloc_type		_alloc;
@@ -451,6 +408,12 @@ template <class Key, class T, class Compare, class Alloc>
 bool	operator>=(const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 {
 	return (!(lhs < rhs));
+}
+
+template <class Key, class T, class Compare, class Alloc>
+void	swap(map<Key, T, Compare, Alloc>& a, map<Key, T, Compare, Alloc>& b)
+{
+	a.swap(b);
 }
 
 }
