@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 14:55:46 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/25 15:43:24 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/29 23:28:04 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,28 @@ class BinarySearchTree
 		return (newNode);
 	}
 	
+	void reAdjust(node_pointer x, node_pointer parent)
+	{
+		if (parent == NULL)
+			return;
+
+		if (parent->_left == x)
+		{
+			if (this->_comp(parent->_pair.first, x->_pair.first))
+				swapLeft(parent, x);
+		}
+		else if (parent->_right == x)
+		{
+			if (this->_comp(x->_pair.first, parent->_pair.first))
+				swapRight(parent, x);
+		}
+	}
+
 	void removeNode(node_pointer parent, node_pointer curr, key_type k)
 	{
 		if (curr == NULL)
 			return;
-
+		
 		if (this->equal(curr->_pair.first, k))
 		{
 			if (curr->_left == NULL && curr->_right == NULL)
@@ -151,12 +168,36 @@ class BinarySearchTree
 			}
 			else if (curr->_left != NULL && curr->_right == NULL)
 			{
-				swapLeft(curr, curr->_left);
+				node_pointer tmp = curr->_left;
+				int flag = 0;
+				while (tmp->_right)
+				{
+					flag = 1;
+					parent = tmp;
+					tmp = tmp->_right;
+				}
+				if (flag == 0)
+					swapLeft(curr, tmp);
+				else
+					swapNodes(curr, tmp);
+				
 				removeNode(curr->_parent, curr, k);
 			}
 			else if (curr->_left == NULL && curr->_right != NULL)
 			{
-				swapRight(curr, curr->_right);
+				node_pointer tmp = curr->_right;
+				int flag = 0;
+				while (tmp->_left)
+				{
+					flag = 1;
+					parent = tmp;
+					tmp = tmp->_left;
+				}
+				if (flag == 0)
+					swapRight(curr, tmp);
+				else
+					swapNodes(curr, tmp);
+				
 				removeNode(curr->_parent, curr, k);
 			}
 			else
@@ -682,15 +723,16 @@ class BinarySearchTree
 	void print()
 	{
     	print2(this->_root, 0);
+		std::cout << "======================\n"; 
 	}
 };
 
-template <class K, class V>
+/*template <class K, class V>
 std::ostream&	operator<<(std::ostream& os, Node<K, V> src)
 {
 	os << "(" << "\033[1;33m" << src._pair.first << "\033[0;28m" << " | " << "\033[1;33m" << src._pair.second << "\033[0;28m" << ")";
 	return (os);
-}
+}*/
 
 }
 

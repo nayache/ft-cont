@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 14:30:28 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/25 15:43:09 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/29 23:28:49 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,9 @@ class	map
 	{
 		if (this == &x)
 			return (*this);
-
-		this->clear();
+		
+		if (!this->empty())
+			this->clear();
 		this->_alloc = x._alloc;
 		this->_comp = x._comp;
 
@@ -143,7 +144,10 @@ class	map
 	typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NullPtr)
 	{
 		while (first != last)
-			this->insert(*first++);
+		{
+			this->insert(*first);
+			++first;
+		}
 	}
 
 	void	erase (iterator position)
@@ -320,7 +324,7 @@ value_compare value_comp() const
 			this->insert(ft::make_pair(k, mapped_type()));
 			ret = this->find(k);
 		}
-		return (ret->second);		
+		return (ret->second);
 	}
 	
 //----------------------------------------------------------------------------//
@@ -339,12 +343,35 @@ value_compare value_comp() const
 		return (false);
 	}
 	
-	void print()
+	void printNode(node_type* x) const
 	{
+		std::cout << "\033[1;28m" << x << "\033[0;28m";
+		std::cout << " data : " << x->_pair;
+		std::cout << " parent : ";
+		if (x != NULL && x->_parent != NULL)
+			std::cout << x->_parent->_pair;
+		else
+			std::cout << "\033[1;36mnil\033[0;28m ";
+		std::cout << " left : ";
+		if (x != NULL && x->_left != NULL)
+			std::cout << x->_left->_pair;
+		else
+			std::cout << "\033[1;36mnil\033[0;28m ";
+		std::cout << " right : ";
+		if (x != NULL && x->_right != NULL)
+			std::cout << x->_right->_pair;
+		else
+			std::cout << "\033[1;36mnil\033[0;28m ";
+		std::cout << std::endl;
+	}
+	void print() const
+	{
+		std::cout << "---------------------------------\n";
     	print2(this->_tree._root, 0);
+		std::cout << "---------------------------------\n";
 	}
 	
-	void print2(node_type* root, int space)
+	void print2(node_type* root, int space) const
 	{
     	if (root == NULL)
 		{
@@ -359,10 +386,17 @@ value_compare value_comp() const
     	std::cout << std::endl;
     	for (int i = 2; i < space; i++)
         	std::cout << " ";
-    	std::cout << root->_pair.first <<"\n";
+    	std::cout << root->_pair.first << "(";
+		if (root->_parent)
+			std::cout << root->_parent->_pair.first;
+		else
+			std::cout << "null";
+		std::cout << ")" << std::endl;
  
 		if (root->_left != NULL)
     		print2(root->_left, space);
+
+		//printNode(root);
 	}
  
 //---------------------------------------

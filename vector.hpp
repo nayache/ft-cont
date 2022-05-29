@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 14:54:17 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/25 15:42:48 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/25 18:50:18 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,17 @@ class	vector
 		~vector()
 		{
 			this->clear();
-			if (this->_capacity > 0)
-				this->_alloc.deallocate(this->_data, this->_capacity);
+			this->_alloc.deallocate(this->_data, this->_capacity);
+
+			this->_capacity = 0;
+			this->_size = 0;
+			this->_data = NULL;
 		}
 		
 		//CONSTRUCTORS
 		
 		explicit	vector(const allocator_type& alloc = allocator_type()) : 
-		_alloc(alloc), _data(0), _size(0), _capacity(0)
+		_alloc(alloc), _data(NULL), _size(0), _capacity(0)
 		{}
 
 		explicit vector(size_type n, const value_type& val = value_type(),
@@ -66,7 +69,7 @@ class	vector
 		{
 			this->_data = this->_alloc.allocate(this->_capacity);
 			for (size_type i = 0; i < n; i++)
-				this->_alloc.construct(_data + i, val);
+				this->_alloc.construct(this->_data + i, val);
 		}
 
 		template <class InputIterator>
@@ -85,12 +88,9 @@ class	vector
 		
 		vector(const vector& x) : _alloc(x._alloc), _size(x._size), _capacity(x._size)
 		{
-			if (this->_capacity == 0)
-				return;
-
 			this->_data = this->_alloc.allocate(this->_capacity);
 			for (size_type i = 0; i < this->_size; i++)
-				this->_alloc.construct(_data + i, x[i]);
+				this->_alloc.construct(this->_data + i, x[i]);
 		}
 
 		vector& operator=(const vector& src)
@@ -162,10 +162,11 @@ class	vector
 		{
 			if (this->_size + 1 > this->_capacity)
 			{
-				if (this->_size == 0)
+				if (this->_capacity == 0)
 				{
-					this->_data = this->_alloc.allocate(1);
-					this->_capacity = 1;
+			//		this->_data = this->_alloc.allocate(1);
+					this->reserve(1);
+				//	this->_capacity = 1;
 				}
 				else
 					this->reserve(this->_size * 2);

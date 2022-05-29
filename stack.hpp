@@ -6,7 +6,7 @@
 /*   By: nayache <nayache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/17 10:28:15 by nayache           #+#    #+#             */
-/*   Updated: 2022/05/20 17:03:08 by nayache          ###   ########.fr       */
+/*   Updated: 2022/05/25 18:50:25 by nayache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ class stack
 	typedef Container							container_type;
 
 	explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {}
+	
+	~stack() {}
 
 	bool	empty() const { return (c.empty()); }
 
